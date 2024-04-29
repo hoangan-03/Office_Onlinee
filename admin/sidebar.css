@@ -1,0 +1,89 @@
+.sidebar {
+    @apply flex flex-col w-20 min-h-screen max-h-full p-3 fixed z-100 bg-[var(--bg-side)] overflow-y-auto;
+    position: fixed;
+    z-index: 100;
+    background-color: white;
+    width: 80px;
+    height: 100vh;
+}
+
+.sidebar:hover {
+    width: 220px;
+}
+
+.sidebar p, .sidebar h1 {
+    color: var(--text-side);
+}
+
+.sidebar-logo {
+    @apply max-w-5 max-h-5;
+}
+
+.sidebar-item {
+    display: flex;
+    gap: 10px;
+    padding-left: 16px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.sidebar-hug {
+    line-height: normal; 
+    padding: 0; 
+    white-space: nowrap;
+    visibility: hidden;
+    height: 80px;
+}
+
+.sidebar:hover .sidebar-hug {
+
+    visibility: visible ;
+    height: 80px;
+}
+
+.centered {
+    align-self: center;
+    justify-self: center;
+}
+.sidebar-hug-item {
+    display: none;
+    line-height: normal;
+    
+}
+
+.sidebar:hover .sidebar-hug-item {
+    display: block ;
+}
+
+.sidebar:hover .sidebar-hidden {
+    display: none;
+}
+
+.currentSidebar {
+    background-color: #d1e4ff;
+    box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.sidebar-item h1 {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: normal;
+    text-align: center;
+}
+:root {
+    --bg-lightblue: #ADD8E6; /* Replace with the color you want */
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+.object-cover{
+    object-fit: cover;
+}
+h1{
+    margin-bottom: 0 !important;
+}
+.mt-50{
+    margin-top: 50px;
+}
