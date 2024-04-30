@@ -211,7 +211,7 @@ form {
 
 input[type="text"] {
   width: 100%;
-  height: 96px;
+  height: auto;
   font-size: larger;
   font-weight: bolder;
   line-height: 1;
@@ -269,4 +269,7 @@ input[type="text"]::placeholder {
   font-weight: 600 !important;
   font-size: medium !important;
   height: 57px !important; 
+}
+#newDepartmentName input{
+  height: auto !important;
 }

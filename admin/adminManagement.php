@@ -90,7 +90,7 @@
       <div id="cover">
         <form onsubmit="event.preventDefault(); searchTable()" class="flex flex-row justify-center items-center h-full">
           <div class=" w-auto h-full relative">
-            <input type="text" id="searchBox" placeholder="Search by name" required>
+            <input type="text" id="searchBox" placeholder="Search by name">
 
           </div>
           <button type="button" class="glasss flex justify-center items-center" id="clearButton" onclick="clearInput()">
@@ -135,22 +135,22 @@
     <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css"
       integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
-    <div class=" container">
+    <div class="container">
       <div class="row">
         <div class="col-lg-12">
           <div class="">
-            <div class="table-responsive bg-white rounded-xl mb-4 h-400 px-5">
+            <div class="table-responsive bg-white rounded-xl mb-4 mx-0 h-400 px-5">
               <table class="table project-list-table table-nowrap align-middle table-borderless">
                 <thead>
                   <tr>
-                    <th scope="col" style="width: 250px;">Full Name</th>
-                    <th scope="col" style="width: 140px;">Gender</th>
+                    <th scope="col" style="width: 220px;">Full Name</th>
+                    <th scope="col" style="width: 120px;">Gender</th>
                     <th scope="col" style="width: 100px;">DOB</th>
-                    <th scope="col" style="width: 220px;">Username</th>
+                    <th scope="col" style="width: 170px;">Username</th>
                     <th scope="col" style="width: 220px;">Password</th>
-                    <th scope="col" style="width: 200px;">Role</th>
+                    <th scope="col" style="width: 180px;">Role</th>
                     <th scope="col" style="width: 270px;">Department</th>
-                    <th scope="col" style="width: auto;">Actions</th>
+                    <th scope="col" style="width: 70px;">Actions</th>
 
                   </tr>
                 </thead>
