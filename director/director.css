@@ -147,6 +147,11 @@ a {
   color: #57c9eb !important;
   background-color: rgba(87, 201, 235, .1);
 }
+.badge-soft-warning {
+  color: #856404 !important;
+  background-color: #ffeeba;
+  border-color: #ffeeba;
+}
 
 .avatar-title {
   align-items: center;
@@ -272,4 +277,10 @@ input[type="text"]::placeholder {
 }
 #newDepartmentName input{
   height: auto !important;
+}
+
+.badge-soft-warning {
+  color: #856404;
+  background-color: #ffeeba;
+  border-color: #ffeeba;
 }

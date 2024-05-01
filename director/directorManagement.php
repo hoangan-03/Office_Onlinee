@@ -9,6 +9,7 @@
   <link href="https://getbootstrap.com/docs/5.2/assets/css/docs.css" rel="stylesheet" />
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="director.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -144,7 +145,8 @@
                   <tr>
                     <th scope="col" style="width: 220px;">Task</th>
                     <th scope="col" style="width: 100px;">Deadline</th>
-                    <th scope="col" style="width: 170px;">Head in charge</th>
+                    <th scope="col" style="width: 170px;">Head</th>
+                    <th scope="col" style="width: 170px;">Department</th>
                     <th scope="col" style="width: 220px;">Status</th>
                     <th scope="col" style="width: 220px;">Action</th>
 
@@ -171,10 +173,12 @@
 
 
 
-                  
-                  $query = 'SELECT tasks.taskid as id, tasks.title AS title, tasks.description AS description, tasks.deadline AS deadline, tasks.status AS status, tasks.responsibleuserid AS responsibleuserid
-                        FROM tasks';
-                 
+
+                  $query = 'SELECT tasks.taskid as id, tasks.title AS title, tasks.description AS description, tasks.deadline AS deadline, tasks.status AS status, tasks.responsibleuserid AS responsibleuserid, departments.departmentname AS departmentname
+                        FROM tasks
+                        INNER JOIN users ON tasks.responsibleuserid = users.userid
+                        INNER JOIN departments ON users.departmentid = departments.departmentid';
+
 
                   $result = pg_query($dbconn, $query);
                   $tasks = pg_fetch_all($result);
@@ -193,28 +197,32 @@
                       </td>
                       <td><?php echo $task['deadline']; ?></td>
                       <td><?php echo $task['responsibleuserid']; ?></td>
+                      <td><?php echo $task['departmentname']; ?></td>
                       <td>
                         <span id="status_<?= $task['id'] ?>" class="badge 
                         <?php
                         switch ($task['status']) {
                           case 'Open':
-                            echo 'badge-soft-danger';
-                            break;
-                          case 'Director':
                             echo 'badge-soft-primary';
                             break;
-                          case 'Department Head':
+                          case 'Completed':
+                            echo 'badge-soft-black';
+                            break;
+                          case 'In progress':
                             echo 'badge-soft-info';
                             break;
-                          case 'Staff':
-                            echo 'badge-soft-black';
+                          case 'Accepted':
+                            echo 'badge-soft-success';
+                            break;
+                          case 'Rejected':
+                            echo 'badge-soft-danger';
                             break;
                         }
                         ?> mb-0">
                           <?php echo $task['status']; ?>
                         </span>
                       </td>
-                      
+
 
                       <td>
                         <ul class="list-inline mb-0">
@@ -225,7 +233,8 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
                               <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                data-bs-target="#viewTaskModal<?= $task['id'] ?>">View Task</a>
+                                data-bs-target="#viewTaskModal<?= $task['id'] ?>" data-taskid="<?= $task['id'] ?>">View
+                                Task</a>
                               <a class="dropdown-item" href="#" data-bs-toggle="modal"
                                 data-bs-target="#deleteTaskModal<?= $task['id'] ?>">Delete Task</a>
                             </div>
@@ -239,172 +248,293 @@
                                       aria-label="Close"></button>
                                   </div>
                                   <div class="modal-body">
-                                    <select id="roleSelect<?= $task['id'] ?>" class="form-select">
-                                     
-                                    </select>
+                                    <table class="table">
+                                      <tr>
+                                        <th>Title</th>
+                                        <td id="taskTitle<?= $task['id'] ?>"></td>
+                                      </tr>
+                                      <tr>
+                                        <th>Description</th>
+                                        <td id="taskDescription<?= $task['id'] ?>"></td>
+                                      </tr>
+                                      <tr>
+                                        <th>Deadline</th>
+                                        <td id="taskDeadline<?= $task['id'] ?>"></td>
+                                      </tr>
+                                      <tr>
+                                        <th>Status</th>
+                                        <td id="taskStatus<?= $task['id'] ?>"></td>
+                                      </tr>
+                                      <tr>
+                                        <th>Responsible User ID</th>
+                                        <td id="taskResponsibleUserId<?= $task['id'] ?>"></td>
+                                      </tr>
+                                      <tr>
+                                        <th>Department Name</th>
+                                        <td id="taskDepartmentName<?= $task['id'] ?>"></td>
+                                      </tr>
+                                    </table>
+                                    <div id="taskCommentSection<?= $task['id'] ?>">
+                                      <textarea id="taskComment<?= $task['id'] ?>"
+                                        placeholder="Add a comment..."></textarea>
+                                      <button type="button" class="btn btn-primary submitCommentBtn"
+                                        data-taskid="<?= $task['id'] ?>">Submit Comment</button>
+                                      <table id="commentTable<?= $task['id'] ?>">
+                                        <thead>
+                                          <tr>
+                                            <th>User ID</th>
+                                            <th>Comment</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <!-- Existing comments will be added here by JavaScript -->
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                    <div id="taskActions<?= $task['id'] ?>">
+                                      <button type="button" class="btn btn-success acceptBtn"
+                                        data-taskid="<?= $task['id'] ?>">Accept</button>
+                                      <button type="button" class="btn btn-danger rejectBtn"
+                                        data-taskid="<?= $task['id'] ?>">Reject</button>
+                                    </div>
                                   </div>
                                   <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Save
-                                      changes</button>
-                                  </div>
-                                  <script>
-                                    
-                                  </script>
-                                </div>
-
-                              </div>
-
-                            </div>
-                            <div class="modal fade" id="deleteTaskModal<?= $task['id'] ?>" tabindex="-1"
-                              aria-labelledby="exampleModalLabel" aria-hidden="true">
-                              <div class="modal-dialog">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                      aria-label="Close"></button>
-                                  </div>
-                                  <div class="modal-body">
-                                   
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Confirm</button>
-                                  </div>
-                                  <script>
-                                    
-                                  </script>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="modal fade" id="addDepartmentModal" tabindex="-1"
-                              aria-labelledby="exampleModalLabel" aria-hidden="true">
-                              <div class="modal-dialog">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Add Department</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                      aria-label="Close"></button>
-                                  </div>
-                                  <div class="modal-body">
-                                    <input type="text" id="newDepartmentName" class="form-control"
-                                      placeholder="Department Name">
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="addDepartment()">Add
-                                      Department</button>
                                   </div>
                                 </div>
                               </div>
                             </div>
-
+                            
                             <script>
-                              function addDepartment() {
-                                var xhr = new XMLHttpRequest();
-                                xhr.open("POST", "add_department.php", true);
-                                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                                xhr.onreadystatechange = function () {
-                                  if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                                    alert("Department added successfully");
-                                    location.reload();
+                            $(document).ready(function () {
+                              $('#viewTaskModal<?= $task['id'] ?>').on('show.bs.modal', function (event) {
+                                var button = $(event.relatedTarget)
+                                var taskId = button.data('taskid')
+                            
+                                $.ajax({
+                                  url: "fetch_task.php",
+                                  method: "POST",
+                                  data: { taskId: taskId },
+                                  dataType: "json",
+                                  success: function (data) {
+                                    $('#taskTitle' + taskId).text(data.title);
+                                    $('#taskDescription' + taskId).text(data.description);
+                                    $('#taskDeadline' + taskId).text(data.deadline);
+                                    $('#taskStatus' + taskId).text(data.status);
+                                    $('#taskResponsibleUserId' + taskId).text(data.responsibleuserid);
+                                    $('#taskDepartmentName' + taskId).text(data.departmentname);
+                            
+                                    if (data.status === 'Completed') {
+                                      $('#taskActions' + taskId).show();
+                                    } else {
+                                      $('#taskActions' + taskId).hide();
+                                    }
+                            
+                                    // Clear the comment table
+                                    $('#commentTable' + taskId + ' tbody').empty();
+                            
+                                    // Add each comment to the comment table
+                                    $.each(data.comments, function (i, comment) {
+                                      $('#commentTable' + taskId + ' tbody').append('<tr><td>' + comment.userid + '</td><td>' + comment.text + '</td></tr>');
+                                    });
                                   }
-                                }
-                                xhr.send("department_name=" + document.getElementById('newDepartmentName').value);
-                              }
+                                });
+                              });
+                            
+                              $('.acceptBtn, .rejectBtn').click(function () {
+                                var taskId = $(this).data('taskid');
+                                var newStatus = $(this).hasClass('acceptBtn') ? 'Accepted' : 'Rejected';
+                                var comment = $('#taskComment' + taskId).val();
+                            
+                                // Disable both buttons
+                                $('.acceptBtn, .rejectBtn').prop('disabled', true);
+                            
+                                $.ajax({
+                                  url: "update_task.php",
+                                  method: "POST",
+                                  data: { taskId: taskId, status: newStatus, comment: comment },
+                                  dataType: "json",
+                                  success: function (data) {
+                                    if (data.status === 'success') {
+                                      $('#taskStatus' + taskId).text(newStatus);
+                                      $('#taskActions' + taskId).hide();
+                                    }
+                                  }
+                                });
+                              });
+                            
+                              $('.submitCommentBtn').off().click(function () {
+                                var taskId = $(this).data('taskid');
+                                var comment = $('#taskComment' + taskId).val();
+                            
+                                $.ajax({
+                                  url: "submit_comment.php",
+                                  method: "POST",
+                                  data: { taskId: taskId, comment: comment, userId: 2 },
+                                  dataType: "json",
+                                  success: function (data) {
+                                    if (data.status === 'success') {
+                                      alert('Comment submitted successfully');
+                                      // Append the new comment to the comment table
+                                      $('#commentTable' + taskId + ' tbody').append('<tr><td>2</td><td>' + comment + '</td></tr>');
+                                      // Clear the comment input field
+                                      $('#taskComment' + taskId).val('');
+                                    }
+                                  }
+                                });
+                              });
+                            });
                             </script>
 
 
-                            <div class="modal fade" id="createAccountModal" tabindex="-1"
-                              aria-labelledby="exampleModalLabel" aria-hidden="true">
-                              <div class="modal-dialog">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Create Account</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                      aria-label="Close"></button>
-                                  </div>
-                                  <div class="modal-body flex flex-col gap-2">
-                                    <input type="text" id="newFullname" class="form-control h-20" placeholder="Fullname">
-                                    <input type="text" id="newUsername" class="form-control h-20" placeholder="Username">
-                                    <input type="text" id="newPassword" class="form-control h-20" placeholder="Password">
-                                    <select id="newGender" class="form-control h-20">
-                                      <option selected disabled>Gender</option>
-                                      <option value="Male">Male</option>
-                                      <option value="Female">Female</option>
-                                      <option value="Other">Other</option>
-                                    </select>
-                                    <select id="newDOB" class="form-control h-20">
-                                      <option selected disabled>Year of birth</option>
-                                      <?php for ($i = date("Y"); $i >= 1900; $i--): ?>
-                                        <option value="<?= $i ?>"><?= $i ?></option>
-                                      <?php endfor; ?>
-                                    </select>
-
-                                    <select id="newRole" class="form-control h-20">
-                                      <option selected disabled>Role</option>
-                                      <?php
-                                      $rolesQuery = 'SELECT rolename FROM roles';
-                                      $rolesResult = pg_query($dbconn, $rolesQuery);
-                                      while ($role = pg_fetch_assoc($rolesResult)) {
-                                        echo '<option value="' . $role['rolename'] . '">' . $role['rolename'] . '</option>';
-                                      }
-                                      ?>
-                                    </select>
-
-                                    <select id="newDepartment" class="form-control h-20">
-                                      <option selected disabled>Department</option>
-                                      <?php
-                                      $departmentsQuery = 'SELECT departmentname FROM departments';
-                                      $departmentsResult = pg_query($dbconn, $departmentsQuery);
-                                      while ($department = pg_fetch_assoc($departmentsResult)) {
-                                        echo '<option value="' . $department['departmentname'] . '">' . $department['departmentname'] . '</option>';
-                                      }
-                                      ?>
-                                    </select>
 
 
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="addDepartment()">Create
-                                      Account</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
+              </div>
+              <div class="modal fade" id="deleteTaskModal<?= $task['id'] ?>" tabindex="-1"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
 
-                            <script>
-                              function addAccount() {
-                                var xhr = new XMLHttpRequest();
-                                xhr.open("POST", "add_account.php", true);
-                                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                                xhr.onreadystatechange = function () {
-                                  if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                                    alert("Account added successfully");
-                                    location.reload();
-                                  }
-                                }
-                                xhr.send("department_name=" + document.getElementById('newDepartmentName').value);
-                              }
-                            </script>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Confirm</button>
+                    </div>
+                    <script>
 
-                          </li>
-                        </ul>
-                      </td>
-                    </tr>
+                    </script>
+                  </div>
+                </div>
+              </div>
 
-                    <?php
+              <div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Add Department</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <input type="text" id="newDepartmentName" class="form-control" placeholder="Department Name">
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" onclick="addDepartment()">Add
+                        Department</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <script>
+                function addDepartment() {
+                  var xhr = new XMLHttpRequest();
+                  xhr.open("POST", "add_department.php", true);
+                  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                  xhr.onreadystatechange = function () {
+                    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                      alert("Department added successfully");
+                      location.reload();
+                    }
+                  }
+                  xhr.send("department_name=" + document.getElementById('newDepartmentName').value);
+                }
+              </script>
+
+
+              <div class="modal fade" id="createAccountModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Create Account</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body flex flex-col gap-2">
+                      <input type="text" id="newFullname" class="form-control h-20" placeholder="Fullname">
+                      <input type="text" id="newUsername" class="form-control h-20" placeholder="Username">
+                      <input type="text" id="newPassword" class="form-control h-20" placeholder="Password">
+                      <select id="newGender" class="form-control h-20">
+                        <option selected disabled>Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                      <select id="newDOB" class="form-control h-20">
+                        <option selected disabled>Year of birth</option>
+                        <?php for ($i = date("Y"); $i >= 1900; $i--): ?>
+                          <option value="<?= $i ?>"><?= $i ?></option>
+                        <?php endfor; ?>
+                      </select>
+
+                      <select id="newRole" class="form-control h-20">
+                        <option selected disabled>Role</option>
+                        <?php
+                        $rolesQuery = 'SELECT rolename FROM roles';
+                        $rolesResult = pg_query($dbconn, $rolesQuery);
+                        while ($role = pg_fetch_assoc($rolesResult)) {
+                          echo '<option value="' . $role['rolename'] . '">' . $role['rolename'] . '</option>';
+                        }
+                        ?>
+                      </select>
+
+                      <select id="newDepartment" class="form-control h-20">
+                        <option selected disabled>Department</option>
+                        <?php
+                        $departmentsQuery = 'SELECT departmentname FROM departments';
+                        $departmentsResult = pg_query($dbconn, $departmentsQuery);
+                        while ($department = pg_fetch_assoc($departmentsResult)) {
+                          echo '<option value="' . $department['departmentname'] . '">' . $department['departmentname'] . '</option>';
+                        }
+                        ?>
+                      </select>
+
+
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" onclick="addDepartment()">Create
+                        Account</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <script>
+                function addAccount() {
+                  var xhr = new XMLHttpRequest();
+                  xhr.open("POST", "add_account.php", true);
+                  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                  xhr.onreadystatechange = function () {
+                    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                      alert("Account added successfully");
+                      location.reload();
+                    }
+                  }
+                  xhr.send("department_name=" + document.getElementById('newDepartmentName').value);
+                }
+              </script>
+
+              </li>
+              </ul>
+              </td>
+              </tr>
+
+              <?php
                   }
                   ?>
-                </tbody>
-              </table>
-            </div>
+            </tbody>
+            </table>
           </div>
         </div>
       </div>
+    </div>
 
 
 

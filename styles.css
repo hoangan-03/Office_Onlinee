@@ -13,9 +13,10 @@
     
 }
 .badge-soft-black {
-    background-color: #505050;
-    color: white;
-  }
+    color: #856404;
+    background-color: #ffeeba;
+    border-color: #ffeeba;
+}
 .flex-wrap{
     flex-wrap: wrap;
 }
