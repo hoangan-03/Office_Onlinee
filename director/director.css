@@ -286,14 +286,4 @@ input[type="text"]::placeholder {
   background-color: #ffeeba;
   border-color: #ffeeba;
 }
-.modal-dialog{
-  width: 800px !important;
-  max-width: 800px !important;
-}
-.modal{
-  -bs-modal-width: 800px !important
-}
-.comment-sec{
-  width: 100%;
-  border: 1px solid black;
-}
+

@@ -24,32 +24,30 @@
       $conn = pg_connect($conn_str);
       $result = pg_query($conn, "SELECT departmentname FROM departments");
       $alldepartments = pg_fetch_all($result);
-      $res = pg_query($conn, "SELECT rolename FROM roles");
-      $allroles = pg_fetch_all($res);
+      $allstatus = array("Open", "In progress", "Completed", "Accepted", "Rejected");
       ?>
 
       <div class="dropdown">
-        <button class="btn btn-primary backk dropdown-toggle" type="button" id="roleDropdown" data-bs-toggle="dropdown"
-          aria-expanded="false">
-          All Roles
+        <button class="btn btn-primary backk dropdown-toggle" type="button" id="statusDropdown"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          All Status
         </button>
-        <ul class="dropdown-menu" aria-labelledby="roleDropdown">
-          <li><a class="dropdown-item" href="#" onclick="filterRole('')">All Roles</a></li>
-          <?php foreach ($allroles as $role): ?>
+        <ul class="dropdown-menu" aria-labelledby="statusDropdown">
+          <li><a class="dropdown-item" href="#" onclick="filterStatus('')">All Status</a></li>
+          <?php foreach ($allstatus as $status): ?>
             <li><a class="dropdown-item" href="#"
-                onclick="filterRole('<?php echo $role['rolename']; ?>')"><?php echo $role['rolename']; ?></a>
-            </li>
+                onclick="filterStatus('<?php echo $status; ?>')"><?php echo $status; ?></a></li>
           <?php endforeach; ?>
         </ul>
       </div>
       <script>
-        var currentRole = "";
+        var currentStatus = "";
         var currentDepartment = "";
 
-        function filterRole(role) {
-          currentRole = role;
+        function filterStatus(status) {
+          currentStatus = status;
           filterTable();
-          document.getElementById("roleDropdown").textContent = role || "All Roles";
+          document.getElementById("statusDropdown").textContent = status || "All Status";
         }
 
         function filterDepartment(department) {
@@ -62,11 +60,13 @@
           var table = document.querySelector(".project-list-table");
           var rows = table.getElementsByTagName("tr");
           for (var i = 1; i < rows.length; i++) {
-            var roleCell = rows[i].getElementsByTagName("td")[5];
-            var departmentCell = rows[i].getElementsByTagName("td")[6];
-            var roleMatch = currentRole === "" || roleCell.textContent.trim() === currentRole;
+            var cells = rows[i].getElementsByTagName("td");
+            if (cells.length < 5) continue;
+            var departmentCell = cells[3];
+            var statusCell = cells[4];
             var departmentMatch = currentDepartment === "" || departmentCell.textContent.trim() === currentDepartment;
-            rows[i].style.display = roleMatch && departmentMatch ? "" : "none";
+            var statusMatch = currentStatus === "" || statusCell.textContent.trim() === currentStatus;
+            rows[i].style.display = departmentMatch && statusMatch ? "" : "none";
           }
         }
       </script>
@@ -90,7 +90,7 @@
       <div id="cover">
         <form onsubmit="event.preventDefault(); searchTable()" class="flex flex-row justify-center items-center h-full">
           <div class=" w-auto h-full relative">
-            <input type="text" id="searchBox" placeholder="Search by name">
+            <input type="text" id="searchBox" placeholder="Search by task">
 
           </div>
           <button type="button" class="glasss flex justify-center items-center" id="clearButton" onclick="clearInput()">
@@ -115,19 +115,20 @@
             var table = document.querySelector(".project-list-table");
             var rows = table.getElementsByTagName("tr");
             for (var i = 1; i < rows.length; i++) {
-              var cell = rows[i].getElementsByTagName("td")[0];
-              var cellText = cell.textContent.toLowerCase().trim().replace(/\s\s+/g, ' ');
-              var match = cellText.includes(searchTerm);
-              rows[i].style.display = match ? "" : "none";
+              var cells = rows[i].getElementsByTagName("td");
+              if (cells.length > 0) { // Check if the row has at least one cell
+                var cell = cells[0];
+                var cellText = cell.textContent.toLowerCase().trim().replace(/\s\s+/g, ' ');
+                var match = cellText.includes(searchTerm);
+                rows[i].style.display = match ? "" : "none";
+              }
             }
           }
         </script>
 
       </div>
-      <button type="button" class="buttonn-74" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">Add
-        Department</button>
-      <button type="button" class="buttonn-74" data-bs-toggle="modal" data-bs-target="#createAccountModal">Create
-        Account</button>
+      <button type="button" class="buttonn-74" data-bs-toggle="modal" data-bs-target="#createtaskModal">Create Task</button>
+      
     </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"
       integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q=="
@@ -240,7 +241,8 @@
                             </div>
                             <div class="modal fade" id="viewTaskModal<?= $task['id'] ?>" tabindex="-1"
                               aria-labelledby="exampleModalLabel" aria-hidden="true">
-                              <div class="modal-dialog modal-xl" style="width:1250px; max-width: 1250px; overflow: auto; height: 600px;">
+                              <div class="modal-dialog modal-xl"
+                                style="width:1250px; max-width: 1250px; overflow: auto; height: 600px;">
                                 <div class="modal-content flex flex-row gap-2 h-full w-full">
                                   <div class="flex flex-col gap-2">
                                     <div class="modal-header">
@@ -287,11 +289,9 @@
 
 
                                   <div id="taskCommentSection <?= $task['id'] ?>"
-
-
                                     class="flex flex-col gap-4 pt-10 items-center justify-between w-300 h-full"
                                     style="width: 1250px; padding: 20px">
-                                    
+
                                     <table id="commentTable<?= $task['id'] ?>">
                                       <thead>
                                         <tr>
@@ -302,17 +302,18 @@
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        
+
                                       </tbody>
                                     </table>
 
                                     <div class="flex flex-col justify-center items-center w-full gap-2">
 
-                                    <textarea style="width: 100%; border: 2px solid black; margin-left: 12px;  margin-right: 12px;  padding: 5px; border-radius: 12px" id="taskComment<?= $task['id'] ?>"
-                                      placeholder="Add a comment..."></textarea>
-                                    <button type="button" class="btn btn-primary submitCommentBtn"
-                                      data-taskid="<?= $task['id'] ?>">Submit Comment</button>
-                                      </div>
+                                      <textarea
+                                        style="width: 100%; border: 2px solid black; margin-left: 12px;  margin-right: 12px;  padding: 5px; border-radius: 12px"
+                                        id="taskComment<?= $task['id'] ?>" placeholder="Add a comment..."></textarea>
+                                      <button type="button" class="btn btn-primary submitCommentBtn"
+                                        data-taskid="<?= $task['id'] ?>">Submit Comment</button>
+                                    </div>
 
 
                                   </div>
@@ -332,7 +333,9 @@
                     $.ajax({
                       url: "fetch_task.php",
                       method: "POST",
-                      data: { taskId: taskId },
+                      data: {
+                        taskId: taskId
+                      },
                       dataType: "json",
                       success: function (data) {
                         $('#taskTitle' + taskId).text(data.title);
@@ -370,7 +373,11 @@
                     $.ajax({
                       url: "update_task.php",
                       method: "POST",
-                      data: { taskId: taskId, status: newStatus, comment: comment },
+                      data: {
+                        taskId: taskId,
+                        status: newStatus,
+                        comment: comment
+                      },
                       dataType: "json",
                       success: function (data) {
                         if (data.status === 'success') {
@@ -388,7 +395,11 @@
                     $.ajax({
                       url: "submit_comment.php",
                       method: "POST",
-                      data: { taskId: taskId, comment: comment, userId: 2 },
+                      data: {
+                        taskId: taskId,
+                        comment: comment,
+                        userId: 2
+                      },
                       dataType: "json",
                       success: function (data) {
                         if (data.status === 'success') {
@@ -432,114 +443,73 @@
               </div>
             </div>
 
-            <div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-              aria-hidden="true">
+            <div class="modal fade" id="createtaskModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                      aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add Department</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <input type="text" id="newDepartmentName" class="form-control" placeholder="Department Name">
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="addDepartment()">Add
-                      Department</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <script>
-              function addDepartment() {
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "add_department.php", true);
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onreadystatechange = function () {
-                  if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                    alert("Department added successfully");
-                    location.reload();
-                  }
-                }
-                xhr.send("department_name=" + document.getElementById('newDepartmentName').value);
-              }
-            </script>
-
-
-            <div class="modal fade" id="createAccountModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-              aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Create Account</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Add Task for Head(s)</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body flex flex-col gap-2">
-                    <input type="text" id="newFullname" class="form-control h-20" placeholder="Fullname">
-                    <input type="text" id="newUsername" class="form-control h-20" placeholder="Username">
-                    <input type="text" id="newPassword" class="form-control h-20" placeholder="Password">
-                    <select id="newGender" class="form-control h-20">
-                      <option selected disabled>Gender</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                    </select>
-                    <select id="newDOB" class="form-control h-20">
-                      <option selected disabled>Year of birth</option>
-                      <?php for ($i = date("Y"); $i >= 1900; $i--): ?>
-                        <option value="<?= $i ?>"><?= $i ?></option>
-                      <?php endfor; ?>
-                    </select>
+                    <input type="text" id="newTaskTitle" class="form-control" placeholder="Task">
+                    <input type="text" id="newTaskDescription" class="form-control" placeholder="Description">
+                    <input type="date" id="newTaskDeadline" class="form-control" placeholder="Deadline">
+                    <select id="newTaskResponsibleUserId" class="form-control">
+                    <option disabled selected value="">Select responsible ID</option>
+                    <?php
+                    $conn_str = "postgresql://webdb_owner:htx50eprzaUA@ep-weathered-poetry-a129mhzu.ap-southeast-1.aws.neon.tech/webdb?options=endpoint%3Dep-weathered-poetry-a129mhzu&sslmode=require";
+                    $dbconn = pg_connect($conn_str);
+                    if (!$dbconn) {
+                        die("Connection failed: " . pg_last_error());
+                    }
 
-                    <select id="newRole" class="form-control h-20">
-                      <option selected disabled>Role</option>
-                      <?php
-                      $rolesQuery = 'SELECT rolename FROM roles';
-                      $rolesResult = pg_query($dbconn, $rolesQuery);
-                      while ($role = pg_fetch_assoc($rolesResult)) {
-                        echo '<option value="' . $role['rolename'] . '">' . $role['rolename'] . '</option>';
-                      }
-                      ?>
+                    $queryy = "SELECT userid FROM users WHERE roleid = 3";
+                    $result = pg_query($dbconn, $queryy);
+
+                    if (!$result) {
+                        die("Error in SQL query: " . pg_last_error());
+                    }
+
+                    while ($row = pg_fetch_assoc($result)) {
+                        echo "<option value='" . $row['userid'] . "'>" . $row['userid'] . "</option>";
+                    }
+
+                    pg_close($dbconn);
+                    ?>
                     </select>
-
-                    <select id="newDepartment" class="form-control h-20">
-                      <option selected disabled>Department</option>
-                      <?php
-                      $departmentsQuery = 'SELECT departmentname FROM departments';
-                      $departmentsResult = pg_query($dbconn, $departmentsQuery);
-                      while ($department = pg_fetch_assoc($departmentsResult)) {
-                        echo '<option value="' . $department['departmentname'] . '">' . $department['departmentname'] . '</option>';
-                      }
-                      ?>
-                    </select>
-
-
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="addDepartment()">Create
-                      Account</button>
+                    <button type="button" class="btn btn-primary" onclick="addTask()">Create Task</button>
                   </div>
                 </div>
               </div>
             </div>
 
             <script>
-              function addAccount() {
+              function addTask() {
                 var xhr = new XMLHttpRequest();
-                xhr.open("POST", "add_account.php", true);
+                xhr.open("POST", "add_task.php", true);
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 xhr.onreadystatechange = function () {
                   if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                    alert("Account added successfully");
+                    alert("Task added successfully");
                     location.reload();
                   }
                 }
-                xhr.send("department_name=" + document.getElementById('newDepartmentName').value);
+                var title = document.getElementById('newTaskTitle').value;
+                var description = document.getElementById('newTaskDescription').value;
+                var deadline = document.getElementById('newTaskDeadline').value;
+                var responsibleUserId = document.getElementById('newTaskResponsibleUserId').value;
+                var creatorId = 2;
+                var status = "Open";
+                var params = "title=" + title + "&description=" + description + "&deadline=" + deadline + "&creatorId=" + creatorId + "&responsibleUserId=" + responsibleUserId + "&status=" + status;
+                xhr.send(params);
               }
             </script>
+
+
 
             </li>
             </ul>

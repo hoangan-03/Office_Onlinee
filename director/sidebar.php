@@ -21,7 +21,7 @@
     </div>
 
     <div class="sidebar-item sidebar-hug flex-col h-60 mb-4">
-      <p class="text-lg font-bold">Administrator</p>
+      <p class="text-lg font-bold">Director</p>
       <p class="text-base">Hello John</p>
     </div>
 
@@ -29,7 +29,7 @@
       <div
         class="sidebar-item items-center flex flex-row justify-start items-center <?php echo basename($_SERVER['PHP_SELF']) == 'directorManagement.php' ? 'bg-blue-100' : ''; ?> gap-4">
         <img alt="calendar" class="sidebar-logo w-2 h-2 object-cover" src="../assets/depart.png" />
-        <h1 class="sidebar-hug-item">Management</h1>
+        <h1 class="sidebar-hug-item">Task Assignment</h1>
       </div>
     </a>
 
