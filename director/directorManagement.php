@@ -127,8 +127,9 @@
         </script>
 
       </div>
-      <button type="button" class="buttonn-74" data-bs-toggle="modal" data-bs-target="#createtaskModal">Create Task</button>
-      
+      <button type="button" class="buttonn-74" data-bs-toggle="modal" data-bs-target="#createtaskModal">Create
+        Task</button>
+
     </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"
       integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q=="
@@ -242,15 +243,15 @@
                             <div class="modal fade" id="viewTaskModal<?= $task['id'] ?>" tabindex="-1"
                               aria-labelledby="exampleModalLabel" aria-hidden="true">
                               <div class="modal-dialog modal-xl"
-                                style="width:1250px; max-width: 1250px; overflow: auto; height: 600px;">
+                                style="width:1450px; max-width: 1250px; overflow: auto; height: 600px;">
                                 <div class="modal-content flex flex-row gap-2 h-full w-full">
-                                  <div class="flex flex-col gap-2">
-                                    <div class="modal-header">
+                                  <div class="flex flex-col gap-2" style="max-width: 700px;">
+                                    <div class="modal-header w-ful">
                                       <h5 class="modal-title" id="exampleModalLabel">View Task</h5>
                                       <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body" class="w-auto">
+                                    <div class="modal-body w-full">
                                       <table class="table">
                                         <tr>
                                           <th>Title</th>
@@ -290,7 +291,7 @@
 
                                   <div id="taskCommentSection <?= $task['id'] ?>"
                                     class="flex flex-col gap-4 pt-10 items-center justify-between w-300 h-full"
-                                    style="width: 1250px; padding: 20px">
+                                    style="width: 750px; padding: 20px">
 
                                     <table id="commentTable<?= $task['id'] ?>">
                                       <thead>
@@ -444,7 +445,7 @@
             </div>
 
             <div class="modal fade" id="createtaskModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                                      aria-hidden="true">
+              aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -456,27 +457,27 @@
                     <input type="text" id="newTaskDescription" class="form-control" placeholder="Description">
                     <input type="date" id="newTaskDeadline" class="form-control" placeholder="Deadline">
                     <select id="newTaskResponsibleUserId" class="form-control">
-                    <option disabled selected value="">Select responsible ID</option>
-                    <?php
-                    $conn_str = "postgresql://webdb_owner:htx50eprzaUA@ep-weathered-poetry-a129mhzu.ap-southeast-1.aws.neon.tech/webdb?options=endpoint%3Dep-weathered-poetry-a129mhzu&sslmode=require";
-                    $dbconn = pg_connect($conn_str);
-                    if (!$dbconn) {
+                      <option disabled selected value="">Select responsible ID</option>
+                      <?php
+                      $conn_str = "postgresql://webdb_owner:htx50eprzaUA@ep-weathered-poetry-a129mhzu.ap-southeast-1.aws.neon.tech/webdb?options=endpoint%3Dep-weathered-poetry-a129mhzu&sslmode=require";
+                      $dbconn = pg_connect($conn_str);
+                      if (!$dbconn) {
                         die("Connection failed: " . pg_last_error());
-                    }
+                      }
 
-                    $queryy = "SELECT userid FROM users WHERE roleid = 3";
-                    $result = pg_query($dbconn, $queryy);
+                      $queryy = "SELECT userid FROM users WHERE roleid = 3";
+                      $result = pg_query($dbconn, $queryy);
 
-                    if (!$result) {
+                      if (!$result) {
                         die("Error in SQL query: " . pg_last_error());
-                    }
+                      }
 
-                    while ($row = pg_fetch_assoc($result)) {
+                      while ($row = pg_fetch_assoc($result)) {
                         echo "<option value='" . $row['userid'] . "'>" . $row['userid'] . "</option>";
-                    }
+                      }
 
-                    pg_close($dbconn);
-                    ?>
+                      pg_close($dbconn);
+                      ?>
                     </select>
                   </div>
                   <div class="modal-footer">
@@ -511,34 +512,19 @@
 
 
 
-            </li>
-            </ul>
-            </td>
-            </tr>
 
             <?php
                   }
                   ?>
-          </tbody>
+
           </table>
         </div>
       </div>
     </div>
-    </div>
 
 
-
-    </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      $('#createAccountModal').on('hidden.bs.modal', function () {
-        $('#newRole').val($('#newRole option:first').val());
-        $('#newDepartment').val($('#newDepartment option:first').val());
-        $('#newGender').val($('#newGender option:first').val());
-        $('#newDOB').val($('#newDOB option:first').val());
-      });
-    </script>
     <script type="text/javascript"></script>
 
   </section>
