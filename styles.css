@@ -59,7 +59,9 @@
 .w-auto {
     width: auto;
 }
-
+.w-300{
+    width: 300px;
+}
 /* For setting height */
 .h-full {
     height: 100%;

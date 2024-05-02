@@ -25,8 +25,10 @@ if (!$result) {
 $task = pg_fetch_assoc($result);
 
 // Prepare SQL statement to fetch comments
-$query = "SELECT comments.userid AS userId, comments.comment AS text
+$query = "SELECT comments.userid AS userId, comments.comment AS text, roles.rolename AS rolename
            FROM comments
+           INNER JOIN users ON comments.userid = users.userid
+           INNER JOIN roles ON users.roleid = roles.roleid
            WHERE comments.taskid = $taskId";
 
 $result = pg_query($dbconn, $query);

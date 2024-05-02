@@ -278,9 +278,22 @@ input[type="text"]::placeholder {
 #newDepartmentName input{
   height: auto !important;
 }
-
+.spaced {
+  padding-right: 20px; /* Adjust as needed */
+}
 .badge-soft-warning {
   color: #856404;
   background-color: #ffeeba;
   border-color: #ffeeba;
+}
+.modal-dialog{
+  width: 800px !important;
+  max-width: 800px !important;
+}
+.modal{
+  -bs-modal-width: 800px !important
+}
+.comment-sec{
+  width: 100%;
+  border: 1px solid black;
 }
