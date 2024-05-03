@@ -17,6 +17,9 @@
 
 <body>
   <?php include 'sidebar.php'; ?>
+  <?php
+  $currentuser = $_SESSION['user'];
+  ?>
   <section class="w-screen h-screen pt-10 pl-10 flex flex-col justify-center items-center gap-2 bg-gray-200">
     <div class="w-full flex flex-row gap-2 justify-center items-center">
       <?php
@@ -144,7 +147,7 @@
             <div class="table-responsive bg-white rounded-xl mb-4 mx-0 h-400 px-5">
               <table class="table project-list-table table-nowrap align-middle table-borderless">
                 <thead>
-                <tr>
+                  <tr>
                     <th scope="col" style="width: 220px;">Task</th>
                     <th scope="col" style="width: 100px;">Deadline</th>
                     <th scope="col" style="width: 200px;">Assignee's ID</th>
@@ -182,7 +185,7 @@
                   INNER JOIN users ON tasks.responsibleuserid = users.userid
                   INNER JOIN departments ON users.departmentid = departments.departmentid
                   INNER JOIN roles ON users.roleid = roles.roleid'; // Join roles table and select rolename
-
+                  
 
                   $result = pg_query($dbconn, $query);
                   $tasks = pg_fetch_all($result);
@@ -409,7 +412,7 @@
                         if (data.status === 'success') {
                           alert('Comment submitted successfully');
                           // Append the new comment to the comment table
-                          $('#commentTable' + taskId + ' tbody').append('<tr><td>2</td><td>' + comment + '</td></tr>');
+                          $('#commentTable' + taskId + ' tbody').append('<tr><td><?= $currentuser['userid'] ?></td><td>Director</td><td>' + comment + '</td></tr>');
                           // Clear the comment input field
                           $('#taskComment' + taskId).val('');
                         }

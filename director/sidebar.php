@@ -14,6 +14,12 @@
 </head>
 
 <body>
+<?php
+  if(session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+  }
+  $currentuser = $_SESSION['user'];
+  ?>
   <div class="sidebar">
     <div class="flex items-center justify-center flex-col gap-2 py-2 h-120 mt-50">
       <img alt="logo" class="w-4 h-4 object-cover" src="../logo.png" />

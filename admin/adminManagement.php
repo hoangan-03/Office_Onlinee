@@ -17,6 +17,20 @@
 
 <body>
   <?php include 'sidebar.php'; ?>
+  <?php
+  session_start();
+
+  if (!isset($_SESSION['user'])) {
+    
+    header("Location: ../login/index.php");
+    exit;
+  }
+
+  $user = $_SESSION['user'];
+  echo "Welcome, " . $user['username'];
+  $conn_str = "postgresql://webdb_owner:htx50eprzaUA@ep-weathered-poetry-a129mhzu.ap-southeast-1.aws.neon.tech/webdb?options=endpoint%3Dep-weathered-poetry-a129mhzu&sslmode=require";
+  $dbconn = pg_connect($conn_str);
+  ?>
   <section class="w-screen h-screen pt-10 pl-10 flex flex-col justify-center items-center gap-2 bg-gray-200">
     <div class="w-full flex flex-row gap-2 justify-center items-center">
       <?php

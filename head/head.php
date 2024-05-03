@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['user'])) {
+    header("Location: ../login/index.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,7 +22,7 @@
 <body>
   <?php 
   include 'sidebar.php'; 
-  $currentPage = basename($_SERVER['PHP_SELF'], ".php"); // Get the current page name
+  $currentPage = basename($_SERVER['PHP_SELF'], ".php"); 
   ?>
   <section id="hero" class="w-screen h-auto bg-gray-200">
     <?php

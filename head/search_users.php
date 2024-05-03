@@ -14,7 +14,6 @@ if (!$result) {
     die("Error in SQL query: " . pg_last_error());
 }
 
-// Output a new table with the matching users
 echo "<table>";
 while ($row = pg_fetch_assoc($result)) {
     echo "<tr>";

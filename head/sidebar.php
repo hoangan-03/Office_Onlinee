@@ -14,6 +14,12 @@
 </head>
 
 <body>
+  <?php
+  if(session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+  }
+  $currentuser = $_SESSION['user'];
+  ?>
   <div class="sidebar">
     <div class="flex items-center justify-center flex-col gap-2 py-2 h-120 mt-50">
       <img alt="logo" class="w-4 h-4 object-cover" src="../logo.png" />
@@ -21,8 +27,8 @@
     </div>
 
     <div class="sidebar-item sidebar-hug flex-col h-60 mb-4">
-      <p class="text-lg font-bold">Director</p>
-      <p class="text-base">Hello John</p>
+      <p class="text-lg font-bold">Head</p>
+      <p class="text-base">Hello <?= $currentuser['username'] ?></p>
     </div>
 
     <a href="headManagement.php">
