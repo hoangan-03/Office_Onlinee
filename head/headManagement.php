@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>director_Management</title>
+  <title>head_Management</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://getbootstrap.com/docs/5.2/assets/css/docs.css" rel="stylesheet" />
   <link rel="stylesheet" href="../styles.css">
@@ -144,7 +144,7 @@
             <div class="table-responsive bg-white rounded-xl mb-4 mx-0 h-400 px-5">
               <table class="table project-list-table table-nowrap align-middle table-borderless">
                 <thead>
-                <tr>
+                  <tr>
                     <th scope="col" style="width: 220px;">Task</th>
                     <th scope="col" style="width: 100px;">Deadline</th>
                     <th scope="col" style="width: 200px;">Assignee's ID</th>
@@ -178,12 +178,11 @@
 
 
                   $query = 'SELECT tasks.taskid as id, tasks.title AS title, tasks.description AS description, tasks.deadline AS deadline, tasks.status AS status, tasks.responsibleuserid AS responsibleuserid, departments.departmentname AS departmentname, roles.rolename AS rolename
-                  FROM tasks
-                  INNER JOIN users ON tasks.responsibleuserid = users.userid
-                  INNER JOIN departments ON users.departmentid = departments.departmentid
-                  INNER JOIN roles ON users.roleid = roles.roleid'; // Join roles table and select rolename
-
-
+            FROM tasks
+            INNER JOIN users ON tasks.responsibleuserid = users.userid
+            INNER JOIN departments ON users.departmentid = departments.departmentid
+            INNER JOIN roles ON users.roleid = roles.roleid'; // Join roles table and select rolename
+                  
                   $result = pg_query($dbconn, $query);
                   $tasks = pg_fetch_all($result);
 
@@ -203,6 +202,7 @@
                       <td><?php echo $task['responsibleuserid']; ?></td>
                       <td><?php echo $task['departmentname']; ?></td>
                       <td><?php echo $task['rolename']; ?></td>
+
                       <td>
                         <span id="status_<?= $task['id'] ?>" class="badge 
                         <?php
@@ -349,7 +349,7 @@
                         $('#taskResponsibleUserId' + taskId).text(data.responsibleuserid);
                         $('#taskDepartmentName' + taskId).text(data.departmentname);
 
-                        if (data.status === 'Completed') {
+                        if (data.status === 'Completed' && data.responsibleuserroleid == 4 && data.responsibleuserdepartmentid == 1) {
                           $('#taskActions' + taskId).show();
                         } else {
                           $('#taskActions' + taskId).hide();
@@ -408,9 +408,9 @@
                       success: function (data) {
                         if (data.status === 'success') {
                           alert('Comment submitted successfully');
-                          // Append the new comment to the comment table
+
                           $('#commentTable' + taskId + ' tbody').append('<tr><td>2</td><td>' + comment + '</td></tr>');
-                          // Clear the comment input field
+
                           $('#taskComment' + taskId).val('');
                         }
                       }
@@ -452,7 +452,7 @@
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add Task for Head(s)</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Add Task for Staff(s)</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body flex flex-col gap-2">
@@ -460,7 +460,7 @@
                     <input type="text" id="newTaskDescription" class="form-control" placeholder="Description">
                     <input type="date" id="newTaskDeadline" class="form-control" placeholder="Deadline">
                     <select id="newTaskResponsibleUserId" class="form-control">
-                      <option disabled selected value="">Select responsible ID of Head</option>
+                      <option disabled selected value="">Select responsible ID of Staff</option>
                       <?php
                       $conn_str = "postgresql://webdb_owner:htx50eprzaUA@ep-weathered-poetry-a129mhzu.ap-southeast-1.aws.neon.tech/webdb?options=endpoint%3Dep-weathered-poetry-a129mhzu&sslmode=require";
                       $dbconn = pg_connect($conn_str);
@@ -468,7 +468,7 @@
                         die("Connection failed: " . pg_last_error());
                       }
 
-                      $queryy = "SELECT userid FROM users WHERE roleid = 3";
+                      $queryy = "SELECT userid FROM users WHERE roleid = 4 and departmentid = 1"; // change to same department late
                       $result = pg_query($dbconn, $queryy);
 
                       if (!$result) {

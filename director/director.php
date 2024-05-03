@@ -11,14 +11,15 @@
   <link rel="stylesheet" href="sidebar.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
+
 <body>
   <?php include 'sidebar.php'; ?>
   <section id="hero" class="w-screen h-auto bg-gray-200">
-  <?php
-    if ($_SERVER['REQUEST_URI'] == '/directorManagement.php') {
-      include 'directorManagement.php';
-    } 
-  ?>
+    <?php
+
+    include 'directorManagement.php';
+    ?>
   </section>
 </body>
+
 </html>

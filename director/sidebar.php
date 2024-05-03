@@ -25,13 +25,13 @@
       <p class="text-base">Hello John</p>
     </div>
 
-    <a href="directorManagement.php">
+    <div>
       <div
-        class="sidebar-item items-center flex flex-row justify-start items-center <?php echo basename($_SERVER['PHP_SELF']) == 'directorManagement.php' ? 'bg-blue-100' : ''; ?> gap-4">
+        class="sidebar-item items-center flex flex-row justify-start items-center bg-blue-100 gap-4">
         <img alt="calendar" class="sidebar-logo w-2 h-2 object-cover" src="../assets/task.png" />
         <h1 class="sidebar-hug-item">Task Assignment</h1>
       </div>
-    </a>
+    </div>
 
 
   </div>

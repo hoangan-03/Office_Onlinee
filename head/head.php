@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ADMIN</title>
+  <title>HEAD</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://getbootstrap.com/docs/5.2/assets/css/docs.css" rel="stylesheet" />
   <link rel="stylesheet" href="../styles.css">
@@ -13,10 +13,17 @@
 </head>
 
 <body>
-  <?php include 'sidebar.php'; ?>
+  <?php 
+  include 'sidebar.php'; 
+  $currentPage = basename($_SERVER['PHP_SELF'], ".php"); // Get the current page name
+  ?>
   <section id="hero" class="w-screen h-auto bg-gray-200">
     <?php
-    include 'adminManagement.php';
+    if ($currentPage == 'headManagement') {
+      include 'headManagement.php';
+    } elseif ($currentPage == 'headSubmission') {
+      include 'headSubmission.php';
+    }
     ?>
   </section>
 </body>
