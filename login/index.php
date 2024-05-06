@@ -1,12 +1,13 @@
-
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>Login V3</title>
+    <title>Login Page</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="images/icons/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
@@ -17,13 +18,17 @@
     <link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
     <link rel="stylesheet" type="text/css" href="css/util.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="js/snap.svg-min.js"></script>
+    <script src="js/modernizr.custom.js"></script>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../prestyles.css">
 </head>
 
 <body>
     <div class="limiter">
         <div class="container-login100" style="background-image: url('images/bg-001.jpg');">
             <div class="wrap-login100">
-                <form class="login100-form validate-form" action="login.php"  method="post">
+                <form class="login100-form validate-form" action="login.php" method="post">
                     <span class="login100-form-logo">
                         <i class="zmdi zmdi-case-check"></i>
                     </span>
@@ -60,8 +65,24 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog ">
+            <div class="modal-content" >
+                <div class="modal-header flex flex-row justify-between bg-theme-dark items-center">
+                    
+                    <h4 class="modal-title text-center text-white">Login Failed</h4>
+                    <button type="button" class="close" data-dismiss="modal" style="color: white;">&times;</button>
+                </div>
+                <div class="modal-body text-2xl text-black">
+                    <p class="text-2xl text-black"><?php echo $_SESSION['error']; ?></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default bg-theme-dark text-white" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div id="dropDownSelect1"></div>
 
     <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
     <script src="vendor/animsition/js/animsition.min.js"></script>
@@ -72,6 +93,16 @@
     <script src="vendor/daterangepicker/daterangepicker.js"></script>
     <script src="vendor/countdowntime/countdowntime.js"></script>
     <script src="js/main.js"></script>
+    <?php
+    if (isset($_SESSION['error'])) {
+        echo "<script type='text/javascript'>
+            $(document).ready(function(){
+                $('#myModal').modal('show');
+            });
+        </script>";
+        unset($_SESSION['error']);
+    }
+    ?>
 
 </body>
 

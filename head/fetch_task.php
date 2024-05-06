@@ -6,11 +6,13 @@ if (!$dbconn) {
 }
 
 $taskId = $_POST['taskId'];
-$query = "SELECT tasks.title AS title, tasks.description AS description, tasks.deadline AS deadline, tasks.status AS status, tasks.responsibleuserid AS responsibleuserid, users.roleid AS responsibleuserroleid, users.departmentid AS responsibleuserdepartmentid, departments.departmentname AS departmentname
+
+$query = "SELECT tasks.title AS title, tasks.description AS description, tasks.deadline AS deadline, tasks.status AS status, tasks.responsibleuserid AS responsibleuserid, tasks.creatorid AS creatorid, users.fullname AS fullname, users.roleid AS responsibleuserroleid, users.departmentid AS responsibleuserdepartmentid, departments.departmentname AS departmentname
            FROM tasks
            INNER JOIN users ON tasks.responsibleuserid = users.userid
            INNER JOIN departments ON users.departmentid = departments.departmentid
            WHERE tasks.taskid = $taskId";
+
 
 $result = pg_query($dbconn, $query);
 

@@ -33,12 +33,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     break;
             }
         } else {
-            $error = "Incorrect password";
-            echo "<script type='text/javascript'>alert('$error');</script>";
+            $_SESSION['error'] = 'Incorrect password';
+            header('Location: index.php');
         }
     } else {
-        $error = "Username does not exist";
-        echo "<script type='text/javascript'>alert('$error');</script>";
+        $_SESSION['error'] = 'Username does not exist';
+        header('Location: index.php');
     }
     pg_close($dbconn);
 }

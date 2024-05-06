@@ -8,7 +8,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://getbootstrap.com/docs/5.2/assets/css/docs.css" rel="stylesheet" />
   <link rel="stylesheet" href="../styles.css">
-  <link rel="stylesheet" href="director.css">
+  <link rel="stylesheet" href="../prestyles.css">
+  <link rel="stylesheet" href="head.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -17,7 +18,10 @@
 
 <body>
   <?php include 'sidebar.php'; ?>
+
   <section class="w-screen h-screen pt-10 pl-10 flex flex-col justify-center items-center gap-2 bg-gray-200">
+
+    <h2 class="text-black">Your assigned task</h2>
     <div class="w-full flex flex-row gap-2 justify-center items-center">
       <?php
       $conn_str = "postgresql://webdb_owner:htx50eprzaUA@ep-weathered-poetry-a129mhzu.ap-southeast-1.aws.neon.tech/webdb?options=endpoint%3Dep-weathered-poetry-a129mhzu&sslmode=require";
@@ -28,15 +32,13 @@
       ?>
 
       <div class="dropdown">
-        <button class="btn btn-primary backk dropdown-toggle" type="button" id="statusDropdown"
-          data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn btn-primary backk dropdown-toggle" type="button" id="statusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
           All Status
         </button>
         <ul class="dropdown-menu" aria-labelledby="statusDropdown">
           <li><a class="dropdown-item" href="#" onclick="filterStatus('')">All Status</a></li>
-          <?php foreach ($allstatus as $status): ?>
-            <li><a class="dropdown-item" href="#"
-                onclick="filterStatus('<?php echo $status; ?>')"><?php echo $status; ?></a></li>
+          <?php foreach ($allstatus as $status) : ?>
+            <li><a class="dropdown-item" href="#" onclick="filterStatus('<?php echo $status; ?>')"><?php echo $status; ?></a></li>
           <?php endforeach; ?>
         </ul>
       </div>
@@ -72,20 +74,7 @@
       </script>
 
 
-      <div class="dropdown">
-        <button class="btn btn-primary backk dropdown-toggle" type="button" id="departmentDropdown"
-          data-bs-toggle="dropdown" aria-expanded="false">
-          All Departments
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="departmentDropdown">
-          <li><a class="dropdown-item" href="#" onclick="filterDepartment('')">All Departments</a></li>
-          <?php foreach ($alldepartments as $department): ?>
-            <li><a class="dropdown-item" href="#"
-                onclick="filterDepartment('<?php echo $department['departmentname']; ?>')"><?php echo $department['departmentname']; ?></a>
-            </li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
+
 
       <div id="cover">
         <form onsubmit="event.preventDefault(); searchTable()" class="flex flex-row justify-center items-center h-full">
@@ -127,16 +116,11 @@
         </script>
 
       </div>
-      <button type="button" class="buttonn-74" data-bs-toggle="modal" data-bs-target="#createtaskModal">Create
-        Task</button>
+
 
     </div>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"
-      integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q=="
-      crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css"
-      integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css" integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
@@ -147,8 +131,9 @@
                   <tr>
                     <th scope="col" style="width: 220px;">Task</th>
                     <th scope="col" style="width: 100px;">Deadline</th>
-                    <th scope="col" style="width: 170px;">Head</th>
-                    <th scope="col" style="width: 170px;">Department</th>
+                    <th scope="col" style="width: 170px;">Director ID</th>
+                    <th scope="col" style="width: 170px;">Director</th>
+
                     <th scope="col" style="width: 220px;">Status</th>
                     <th scope="col" style="width: 220px;">Action</th>
 
@@ -161,6 +146,7 @@
                   if (!$dbconn) {
                     die("Connection failed: " . pg_last_error());
                   }
+                  $currentuser = $_SESSION['user'];
                   $query = 'SELECT * FROM roles';
                   $result = pg_query($dbconn, $query);
                   $allroles = pg_fetch_all($result);
@@ -172,21 +158,21 @@
                   $query = 'SELECT * FROM departments';
                   $result = pg_query($dbconn, $query);
                   $alldepartments = pg_fetch_all($result);
-
-
-
-
-                  $query = 'SELECT tasks.taskid as id, tasks.title AS title, tasks.description AS description, tasks.deadline AS deadline, tasks.status AS status, tasks.responsibleuserid AS responsibleuserid, departments.departmentname AS departmentname
-                        FROM tasks
-                        INNER JOIN users ON tasks.responsibleuserid = users.userid
-                        INNER JOIN departments ON users.departmentid = departments.departmentid';
+                  $currentUserId = $currentuser['userid'];
+                  $query = "SELECT tasks.taskid as id, tasks.title AS title, tasks.description AS description, tasks.deadline AS deadline, tasks.status AS status, tasks.creatorid AS creatorid, departments.departmentname AS departmentname, users.fullname AS fullname
+                              FROM tasks
+                              INNER JOIN users ON tasks.creatorid = users.userid
+                              INNER JOIN departments ON users.departmentid = departments.departmentid WHERE tasks.responsibleuserid = $currentUserId";
 
 
                   $result = pg_query($dbconn, $query);
+                  if (!$result) {
+                    die("Error in SQL query: " . pg_last_error());
+                  }
                   $tasks = pg_fetch_all($result);
 
                   foreach ($tasks as $task) {
-                    ?>
+                  ?>
 
                     <tr>
                       <td>
@@ -198,8 +184,9 @@
                         <a href="#" class="text-body"><?php echo $task['title']; ?></a>
                       </td>
                       <td><?php echo $task['deadline']; ?></td>
-                      <td><?php echo $task['responsibleuserid']; ?></td>
-                      <td><?php echo $task['departmentname']; ?></td>
+                      <td><?php echo $task['creatorid']; ?></td>
+                      <td><?php echo $task['fullname']; ?></td>
+
                       <td>
                         <span id="status_<?= $task['id'] ?>" class="badge 
                         <?php
@@ -229,29 +216,23 @@
                       <td>
                         <ul class="list-inline mb-0">
                           <li class="list-inline-item dropdown">
-                            <a class="text-muted dropdown-toggle font-size-18 px-2" href="#" role="button"
-                              data-bs-toggle="dropdown" aria-haspopup="true">
+                            <a class="text-muted dropdown-toggle font-size-18 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
                               <i class="bx bx-dots-vertical-rounded"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
-                              <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                data-bs-target="#viewTaskModal<?= $task['id'] ?>" data-taskid="<?= $task['id'] ?>">View
+                              <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewTaskModal<?= $task['id'] ?>" data-taskid="<?= $task['id'] ?>">View
                                 Task</a>
-                              <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                data-bs-target="#deleteTaskModal<?= $task['id'] ?>">Delete Task</a>
+
                             </div>
-                            <div class="modal fade" id="viewTaskModal<?= $task['id'] ?>" tabindex="-1"
-                              aria-labelledby="exampleModalLabel" aria-hidden="true">
-                              <div class="modal-dialog modal-xl"
-                                style="width:1450px; max-width: 1250px; overflow: auto; height: 600px;">
+                            <div class="modal fade" id="viewTaskModal<?= $task['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog modal-xl" style="width:1450px; max-width: 1250px; overflow: auto; height: 600px;">
                                 <div class="modal-content flex flex-row gap-2 h-full w-full">
                                   <div class="flex flex-col gap-2" style="max-width: 700px;">
                                     <div class="modal-header w-ful">
                                       <h5 class="modal-title" id="exampleModalLabel">View Task</h5>
-                                      <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body w-full">
+                                    <div class="modal-body w-full h-full justify-between flex items-center flex-col">
                                       <table class="table">
                                         <tr>
                                           <th>Title</th>
@@ -270,28 +251,28 @@
                                           <td id="taskStatus<?= $task['id'] ?>"></td>
                                         </tr>
                                         <tr>
-                                          <th>Responsible User ID</th>
-                                          <td id="taskResponsibleUserId<?= $task['id'] ?>"></td>
+                                          <th>Director ID</th>
+                                          <td id="taskAssignerId<?= $task['id'] ?>"></td>
                                         </tr>
                                         <tr>
-                                          <th>Department Name</th>
-                                          <td id="taskDepartmentName<?= $task['id'] ?>"></td>
+                                          <th>Director Name</th>
+                                          <td id="taskAssigner<?= $task['id'] ?>"></td>
                                         </tr>
                                       </table>
 
-                                      <div id="taskActions<?= $task['id'] ?>">
-                                        <button type="button" class="btn btn-success acceptBtn"
-                                          data-taskid="<?= $task['id'] ?>">Accept</button>
-                                        <button type="button" class="btn btn-danger rejectBtn"
-                                          data-taskid="<?= $task['id'] ?>">Reject</button>
+                                      <div class="flex flex-row gap-4 justify-center items-center" id="taskActions<?= $task['id'] ?>">
+                                        <button type="button" class="btn btn-success takeBtn" data-taskid="<?= $task['id'] ?>">Take on task</button>
+                                        <button type="button" class="btn btn-primary submitBtn" data-taskid="<?= $task['id'] ?>">Submit task</button>
+
+
+
+
                                       </div>
                                     </div>
                                   </div>
 
 
-                                  <div id="taskCommentSection <?= $task['id'] ?>"
-                                    class="flex flex-col gap-4 pt-10 items-center justify-between w-300 h-full"
-                                    style="width: 750px; padding: 20px">
+                                  <div id="taskCommentSection <?= $task['id'] ?>" class="flex flex-col gap-4 pt-10 items-center justify-between w-300 h-full" style="width: 750px; padding: 20px">
 
                                     <table id="commentTable<?= $task['id'] ?>">
                                       <thead>
@@ -309,11 +290,8 @@
 
                                     <div class="flex flex-col justify-center items-center w-full gap-2">
 
-                                      <textarea
-                                        style="width: 100%; border: 2px solid black; margin-left: 12px;  margin-right: 12px;  padding: 5px; border-radius: 12px"
-                                        id="taskComment<?= $task['id'] ?>" placeholder="Add a comment..."></textarea>
-                                      <button type="button" class="btn btn-primary submitCommentBtn"
-                                        data-taskid="<?= $task['id'] ?>">Submit Comment</button>
+                                      <textarea style="width: 100%; border: 2px solid black; margin-left: 12px;  margin-right: 12px;  padding: 5px; border-radius: 12px" id="taskComment<?= $task['id'] ?>" placeholder="Add a comment..."></textarea>
+                                      <button type="button" class="btn btn-primary submitCommentBtn" data-taskid="<?= $task['id'] ?>">Submit Comment</button>
                                     </div>
 
 
@@ -323,206 +301,158 @@
 
                               </div>
                             </div>
-              </div>
-
-              <script>
-                $(document).ready(function () {
-                  $('#viewTaskModal<?= $task['id'] ?>').on('show.bs.modal', function (event) {
-                    var button = $(event.relatedTarget)
-                    var taskId = button.data('taskid')
-
-                    $.ajax({
-                      url: "fetch_task.php",
-                      method: "POST",
-                      data: {
-                        taskId: taskId
-                      },
-                      dataType: "json",
-                      success: function (data) {
-                        $('#taskTitle' + taskId).text(data.title);
-                        $('#taskDescription' + taskId).text(data.description);
-                        $('#taskDeadline' + taskId).text(data.deadline);
-                        $('#taskStatus' + taskId).text(data.status);
-                        $('#taskResponsibleUserId' + taskId).text(data.responsibleuserid);
-                        $('#taskDepartmentName' + taskId).text(data.departmentname);
-
-                        if (data.status === 'Completed') {
-                          $('#taskActions' + taskId).show();
-                        } else {
-                          $('#taskActions' + taskId).hide();
-                        }
-
-                        // Clear the comment table
-                        $('#commentTable' + taskId + ' tbody').empty();
-
-                        // Add each comment to the comment table
-                        $.each(data.comments, function (i, comment) {
-                          $('#commentTable' + taskId + ' tbody').append('<tr><td>' + comment.userid + '</td><td>' + comment.rolename + '</td><td>' + comment.text + '</td></tr>');
-                        });
-                      }
-                    });
-                  });
-
-                  $('.acceptBtn, .rejectBtn').click(function () {
-                    var taskId = $(this).data('taskid');
-                    var newStatus = $(this).hasClass('acceptBtn') ? 'Accepted' : 'Rejected';
-                    var comment = $('#taskComment' + taskId).val();
-
-                    // Disable both buttons
-                    $('.acceptBtn, .rejectBtn').prop('disabled', true);
-
-                    $.ajax({
-                      url: "update_task.php",
-                      method: "POST",
-                      data: {
-                        taskId: taskId,
-                        status: newStatus,
-                        comment: comment
-                      },
-                      dataType: "json",
-                      success: function (data) {
-                        if (data.status === 'success') {
-                          $('#taskStatus' + taskId).text(newStatus);
-                          $('#taskActions' + taskId).hide();
-                        }
-                      }
-                    });
-                  });
-
-                  $('.submitCommentBtn').off().click(function () {
-                    var taskId = $(this).data('taskid');
-                    var comment = $('#taskComment' + taskId).val();
-
-                    $.ajax({
-                      url: "submit_comment.php",
-                      method: "POST",
-                      data: {
-                        taskId: taskId,
-                        comment: comment,
-                        userId: 2
-                      },
-                      dataType: "json",
-                      success: function (data) {
-                        if (data.status === 'success') {
-                          alert('Comment submitted successfully');
-                          // Append the new comment to the comment table
-                          $('#commentTable' + taskId + ' tbody').append('<tr><td>2</td><td>' + comment + '</td></tr>');
-                          // Clear the comment input field
-                          $('#taskComment' + taskId).val('');
-                        }
-                      }
-                    });
-                  });
-                });
-              </script>
-
-
-
-
-            </div>
-            <div class="modal fade" id="deleteTaskModal<?= $task['id'] ?>" tabindex="-1"
-              aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-
-                    <form id="deleteForm<?= $task['id'] ?>" action="delete_task.php" method="post">
-                      Are you sure you want to delete this task?
-                      <input type="hidden" name="taskId" value="<?= $task['id'] ?>">
-                    </form>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary"
-                      onclick="document.getElementById('deleteForm<?= $task['id'] ?>').submit()">Confirm</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="modal fade" id="createtaskModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-              aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add Task for Staff(s)</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body flex flex-col gap-2">
-                    <input type="text" id="newTaskTitle" class="form-control" placeholder="Task">
-                    <input type="text" id="newTaskDescription" class="form-control" placeholder="Description">
-                    <input type="date" id="newTaskDeadline" class="form-control" placeholder="Deadline">
-                    <select id="newTaskResponsibleUserId" class="form-control">
-                      <option disabled selected value="">Select responsible ID</option>
-                      <?php
-                      $conn_str = "postgresql://webdb_owner:htx50eprzaUA@ep-weathered-poetry-a129mhzu.ap-southeast-1.aws.neon.tech/webdb?options=endpoint%3Dep-weathered-poetry-a129mhzu&sslmode=require";
-                      $dbconn = pg_connect($conn_str);
-                      if (!$dbconn) {
-                        die("Connection failed: " . pg_last_error());
-                      }
-
-                      $queryy = "SELECT userid FROM users WHERE roleid = 4 and departmentid = 1"; // change to same department late
-                      $result = pg_query($dbconn, $queryy);
-
-                      if (!$result) {
-                        die("Error in SQL query: " . pg_last_error());
-                      }
-
-                      while ($row = pg_fetch_assoc($result)) {
-                        echo "<option value='" . $row['userid'] . "'>" . $row['userid'] . "</option>";
-                      }
-
-                      pg_close($dbconn);
-                      ?>
-                    </select>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="addTask()">Create Task</button>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <script>
-              function addTask() {
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "add_task.php", true);
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onreadystatechange = function () {
-                  if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                    alert("Task added successfully");
-                    location.reload();
-                  }
-                }
-                var title = document.getElementById('newTaskTitle').value;
-                var description = document.getElementById('newTaskDescription').value;
-                var deadline = document.getElementById('newTaskDeadline').value;
-                var responsibleUserId = document.getElementById('newTaskResponsibleUserId').value;
-                var creatorId = 2;
-                var status = "Open";
-                var params = "title=" + title + "&description=" + description + "&deadline=" + deadline + "&creatorId=" + creatorId + "&responsibleUserId=" + responsibleUserId + "&status=" + status;
-                xhr.send(params);
-              }
+              $(document).ready(function() {
+                $('#viewTaskModal<?= $task['id'] ?>').on('show.bs.modal', function(event) {
+                  var button = $(event.relatedTarget)
+                  var taskId = button.data('taskid')
+
+                  $.ajax({
+                    url: "fetch_task.php",
+                    method: "POST",
+                    data: {
+                      taskId: taskId
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                      $('#taskTitle' + taskId).text(data.title);
+                      $('#taskDescription' + taskId).text(data.description);
+                      $('#taskDeadline' + taskId).text(data.deadline);
+                      $('#taskStatus' + taskId).text(data.status);
+                      $('#taskAssignerId' + taskId).text(data.creatorid);
+                      $('#taskAssigner' + taskId).text(data.fullname);
+
+                      if (data.status === 'Open') {
+                        $('.takeBtn[data-taskid="' + taskId + '"]').prop('disabled', false);
+                        $('.submitBtn[data-taskid="' + taskId + '"]').prop('disabled', true);
+                      } else if (data.status === 'In progress') {
+                        $('.takeBtn[data-taskid="' + taskId + '"]').prop('disabled', true);
+                        $('.submitBtn[data-taskid="' + taskId + '"]').prop('disabled', false);
+                      } else {
+                        $('.takeBtn[data-taskid="' + taskId + '"]').prop('disabled', true);
+                        $('.submitBtn[data-taskid="' + taskId + '"]').prop('disabled', true);
+                      }
+
+                      $('#commentTable' + taskId + ' tbody').empty();
+
+                      $.each(data.comments, function(i, comment) {
+                        $('#commentTable' + taskId + ' tbody').append('<tr><td>' + comment.userid + '</td><td>' + comment.rolename + '</td><td>' + comment.text + '</td></tr>');
+                      });
+                    }
+                  });
+                });
+                $('.submitBtn').click(function() {
+                  var taskId = $(this).data('taskid');
+                  var newStatus = 'Completed';
+                  var comment = $('#taskComment' + taskId).val();
+
+                  $('.submitBtn').prop('disabled', true);
+
+                  $.ajax({
+                    url: "update_task.php",
+                    method: "POST",
+                    data: {
+                      taskId: taskId,
+                      status: newStatus,
+                      comment: comment
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                      if (data.status === 'success') {
+                        $('#taskStatus' + taskId).text(newStatus);
+
+                      }
+                    }
+                  });
+                  $('.modal-title').text('Submit Task Successfully');
+                  $('.modal-body p').text('You can wait for the Director to review your submission');
+                  $('#myModal').modal('show');
+                  $('#taskStatus' + taskId).text(newStatus);
+                });
+                $('.takeBtn').click(function() {
+                  var taskId = $(this).data('taskid');
+                  var newStatus = 'In progress';
+                  var comment = $('#taskComment' + taskId).val();
+
+                  $('.takeBtn').prop('disabled', true);
+
+                  $.ajax({
+                    url: "update_task.php",
+                    method: "POST",
+                    data: {
+                      taskId: taskId,
+                      status: newStatus,
+                      comment: comment
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                      if (data.status === 'success') {
+                        $('#taskStatus' + taskId).text(newStatus);
+
+                      }
+                    }
+
+                  });
+                  $('.modal-title').text('Task Taken Successfully');
+                  $('.modal-body p').text('You can start working on the task');
+                  $('#myModal').modal('show');
+                  $('#taskStatus' + taskId).text(newStatus);
+                });
+                $('.submitCommentBtn').off().click(function() {
+                  var taskId = $(this).data('taskid');
+                  var comment = $('#taskComment' + taskId).val();
+
+                  $.ajax({
+                    url: "submit_comment.php",
+                    method: "POST",
+                    data: {
+                      taskId: taskId,
+                      comment: comment,
+                      userId: 2
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                      if (data.status === 'success') {
+                        alert('Comment submitted successfully');
+
+                        $('#commentTable' + taskId + ' tbody').append('<tr><td>2</td><td>' + comment + '</td></tr>');
+
+                        $('#taskComment' + taskId).val('');
+                      }
+                    }
+                  });
+                });
+              });
             </script>
+          </div>
 
+          <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog ">
+              <div class="modal-content">
+                <div class="modal-header flex flex-row justify-between bg-theme-dark items-center">
 
-
-
-            <?php
+                  <h4 class="modal-title text-center text-white"></h4>
+                  <button type="button" class="close" data-dismiss="modal" style="color: white;">&times;</button>
+                </div>
+                <div class="modal-body text-2xl text-black">
+                  <p class="text-2xl text-black"></p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default bg-theme-dark text-white" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <?php
                   }
-                  ?>
+        ?>
 
-          </table>
+        </table>
         </div>
       </div>
     </div>
-
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript"></script>

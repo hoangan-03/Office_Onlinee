@@ -337,10 +337,8 @@
                         $('#taskActions' + taskId).hide();
                       }
 
-                      // Clear the comment table
                       $('#commentTable' + taskId + ' tbody').empty();
 
-                      // Add each comment to the comment table
                       $.each(data.comments, function(i, comment) {
                         $('#commentTable' + taskId + ' tbody').append('<tr><td>' + comment.userid + '</td><td>' + comment.rolename + '</td><td>' + comment.text + '</td></tr>');
                       });
@@ -353,7 +351,6 @@
                   var newStatus = $(this).hasClass('acceptBtn') ? 'Accepted' : 'Rejected';
                   var comment = $('#taskComment' + taskId).val();
 
-                  // Disable both buttons
                   $('.acceptBtn, .rejectBtn').prop('disabled', true);
 
                   $.ajax({
