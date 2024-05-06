@@ -22,7 +22,7 @@ if (!$result) {
 
 $task = pg_fetch_assoc($result);
 
-$query = "SELECT comments.userid AS userId, comments.comment AS text, roles.rolename AS rolename
+$query = "SELECT comments.userid AS userId, comments.comment AS text, roles.rolename AS rolename, comments.timestamp AS timestampp
            FROM comments
            INNER JOIN users ON comments.userid = users.userid
            INNER JOIN roles ON users.roleid = roles.roleid
