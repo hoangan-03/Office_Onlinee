@@ -8,26 +8,20 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://getbootstrap.com/docs/5.2/assets/css/docs.css" rel="stylesheet" />
   <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../prestyles.css">
   <link rel="stylesheet" href="admin.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <script src="admin.js"></script>
 </head>
 
 <body>
   <?php include 'sidebar.php'; ?>
   <?php
-  session_start();
-
   if (!isset($_SESSION['user'])) {
-    
     header("Location: ../login/index.php");
     exit;
   }
-
-  $user = $_SESSION['user'];
-  echo "Welcome, " . $user['username'];
   $conn_str = "postgresql://webdb_owner:htx50eprzaUA@ep-weathered-poetry-a129mhzu.ap-southeast-1.aws.neon.tech/webdb?options=endpoint%3Dep-weathered-poetry-a129mhzu&sslmode=require";
   $dbconn = pg_connect($conn_str);
   ?>
@@ -76,8 +70,8 @@
           var table = document.querySelector(".project-list-table");
           var rows = table.getElementsByTagName("tr");
           for (var i = 1; i < rows.length; i++) {
-            var roleCell = rows[i].getElementsByTagName("td")[5];
-            var departmentCell = rows[i].getElementsByTagName("td")[6];
+            var roleCell = rows[i].getElementsByTagName("td")[4];
+            var departmentCell = rows[i].getElementsByTagName("td")[5];
             var roleMatch = currentRole === "" || roleCell.textContent.trim() === currentRole;
             var departmentMatch = currentDepartment === "" || departmentCell.textContent.trim() === currentDepartment;
             rows[i].style.display = roleMatch && departmentMatch ? "" : "none";
@@ -161,7 +155,7 @@
                     <th scope="col" style="width: 120px;">Gender</th>
                     <th scope="col" style="width: 100px;">DOB</th>
                     <th scope="col" style="width: 170px;">Username</th>
-                    <th scope="col" style="width: 220px;">Password</th>
+                  
                     <th scope="col" style="width: 180px;">Role</th>
                     <th scope="col" style="width: 270px;">Department</th>
                     <th scope="col" style="width: 70px;">Actions</th>
@@ -213,7 +207,7 @@
                       <td><?php echo $user['gender']; ?></td>
                       <td><?php echo $user['yearofbirth']; ?></td>
                       <td><?php echo $user['username']; ?></td>
-                      <td><?php echo $user['password']; ?></td>
+                      
                       <td>
                         <span id="role_<?= $user['id'] ?>" class="badge 
                         <?php
@@ -440,7 +434,7 @@
                                   </div>
                                   <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="addDepartment()">Create
+                                    <button type="button" class="btn btn-primary" onclick="addAccount()">Create
                                       Account</button>
                                   </div>
                                 </div>
@@ -458,7 +452,15 @@
                                     location.reload();
                                   }
                                 }
-                                xhr.send("department_name=" + document.getElementById('newDepartmentName').value);
+                                xhr.send(
+                                  "newFullname=" + document.getElementById('newFullname').value +
+                                  "&newUsername=" + document.getElementById('newUsername').value +
+                                  "&newPassword=" + document.getElementById('newPassword').value +
+                                  "&newGender=" + document.getElementById('newGender').value +
+                                  "&newDOB=" + document.getElementById('newDOB').value +
+                                  "&newRole=" + document.getElementById('newRole').value +
+                                  "&newDepartment=" + document.getElementById('newDepartment').value
+                                );
                               }
                             </script>
 

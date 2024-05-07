@@ -17,11 +17,17 @@
 </head>
 
 <body>
-  <?php include 'sidebar.php'; ?>
+  <?php include 'sidebar.php';
+  if (!isset($_SESSION['user'])) {
+    header("Location: ../login/index.php");
+    exit;
+  }
+  $currentuser = $_SESSION['user']; ?>
+
 
   <section class="w-screen h-screen pt-10 pl-10 flex flex-col justify-center items-center gap-2 bg-gray-200">
 
-    <h2 class="text-black">Your assigned task</h2>
+    <h2 class="text-black text-2xl dosis font-bold">YOUR TASK</h2>
     <div class="w-full flex flex-row gap-2 justify-center items-center">
       <?php
       $conn_str = "postgresql://webdb_owner:htx50eprzaUA@ep-weathered-poetry-a129mhzu.ap-southeast-1.aws.neon.tech/webdb?options=endpoint%3Dep-weathered-poetry-a129mhzu&sslmode=require";
@@ -114,10 +120,7 @@
             }
           }
         </script>
-
       </div>
-
-
     </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css" integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
@@ -135,7 +138,6 @@
                     <th scope="col" style="width: 170px;">Director</th>
                     <th scope="col" style="width: 220px;">Status</th>
                     <th scope="col" style="width: 220px;">Action</th>
-
                   </tr>
                 </thead>
                 <tbody>
@@ -162,8 +164,6 @@
                               FROM tasks
                               INNER JOIN users ON tasks.creatorid = users.userid
                               INNER JOIN departments ON users.departmentid = departments.departmentid WHERE tasks.responsibleuserid = $currentUserId";
-
-
                   $result = pg_query($dbconn, $query);
                   if (!$result) {
                     die("Error in SQL query: " . pg_last_error());
@@ -172,7 +172,6 @@
 
                   foreach ($tasks as $task) {
                   ?>
-
                     <tr>
                       <td>
                         <div class="avatar-sm d-inline-block me-2">
@@ -225,13 +224,13 @@
                             <div class="modal fade" id="viewTaskModal<?= $task['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                               <div class="modal-dialog modal-xl" style="width:1450px; max-width: 1250px; overflow: auto; height: 600px;">
                                 <div class="modal-content flex flex-row gap-2 h-full w-full">
-                                  <div class="flex flex-col gap-2" style="max-width: 700px;">
+                                  <div class="flex flex-col gap-2" style="width: 450px;">
                                     <div class="modal-header w-ful">
                                       <h5 class="modal-title" id="exampleModalLabel">View Task</h5>
                                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body w-full h-full justify-between flex items-center flex-col">
-                                      <table class="table">
+                                      <table class="tasktab w-full">
                                         <tr>
                                           <th>Title</th>
                                           <td id="taskTitle<?= $task['id'] ?>"></td>
@@ -263,8 +262,8 @@
                                       </div>
                                     </div>
                                   </div>
-                                  <div id="taskCommentSection <?= $task['id'] ?>" class="flex flex-col items-centerw-300 h-full" style="width: 750px; padding: 20px">
-                                    <div class="commentTable justify-between flex flex-col h-full">
+                                  <div id="taskCommentSection <?= $task['id'] ?>" class="flex flex-col items-center w-300 h-full" style="width: 750px; padding: 20px">
+                                    <div class="commentTable w-full justify-between flex flex-col h-full">
                                       <table id="commentTable<?= $task['id'] ?>">
                                         <thead>
                                           <tr>
@@ -279,6 +278,35 @@
                                         </tbody>
                                       </table>
                                       <style>
+                                        .tasktab {
+                                          display: block;
+                                          width: 100%;
+                                          height: 66%;
+                                          overflow: auto;
+                                        }
+
+                                        .tasktab tbody {
+                                          display: table;
+                                          width: 100%;
+                                          height: 100%;
+                                          table-layout: fixed !important;
+                                        }
+
+                                        .tasktab th {
+
+                                          padding-top: 0px !important;
+                                          padding-left: 0px !important;
+                                          padding-bottom: 0px !important;
+                                        }
+
+                                        .tasktab td {
+                                          white-space: normal;
+                                          padding-left: 30px !important;
+                                          padding-right: 0px !important;
+                                          padding-top: 0px !important;
+                                          padding-bottom: 0px !important;
+                                        }
+
                                         .commentTable {
                                           width: 100%;
                                           display: flex;

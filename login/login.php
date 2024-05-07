@@ -8,6 +8,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $username = $_POST['username'];
     $password = $_POST['pass'];
+    $hashed_password = substr(hash('sha512', $password) . hash('sha512', $password) . hash('sha512', $password), 0, 255);
+
     $query = "SELECT * FROM users WHERE username = '$username'";
     $result = pg_query($dbconn, $query);
     if (!$result) {
@@ -15,21 +17,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $user = pg_fetch_assoc($result);
     if ($user) {
-        if ($user['password'] == $password) {
+        if ($user['password'] == $hashed_password) {
             $_SESSION['user'] = $user;
 
             switch ($user['roleid']) {
                 case 1:
-                    header('Location: ../admin/admin.php');
+                    header('Location: ../admin/home.php');
                     break;
                 case 2:
-                    header('Location: ../director/director.php');
+                    header('Location: ../director/home.php');
                     break;
                 case 3:
-                    header('Location: ../head/head.php');
+                    header('Location: ../head/home.php');
                     break;
                 case 4:
-                    header('Location: ../staff/staff.php');
+                    header('Location: ../staff/home.php');
                     break;
             }
         } else {

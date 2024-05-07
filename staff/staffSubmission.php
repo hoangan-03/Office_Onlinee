@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>head_Management</title>
+  <title>staff_Submission</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://getbootstrap.com/docs/5.2/assets/css/docs.css" rel="stylesheet" />
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../prestyles.css">
-  <link rel="stylesheet" href="head.css">
+  <link rel="stylesheet" href="staff.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -18,15 +18,10 @@
 
 <body>
   <?php include 'sidebar.php'; ?>
-  
-  <?php
-  if (!isset($_SESSION['user'])) {
-    header("Location: ../login/index.php");
-    exit;
-  }
-  $currentuser = $_SESSION['user'];
-  ?>
+
   <section class="w-screen h-screen pt-10 pl-10 flex flex-col justify-center items-center gap-2 bg-gray-200">
+
+    <h2 class="text-black text-2xl dosis font-bold">YOUR TASK</h2>
     <div class="w-full flex flex-row gap-2 justify-center items-center">
       <?php
       $conn_str = "postgresql://webdb_owner:htx50eprzaUA@ep-weathered-poetry-a129mhzu.ap-southeast-1.aws.neon.tech/webdb?options=endpoint%3Dep-weathered-poetry-a129mhzu&sslmode=require";
@@ -35,7 +30,6 @@
       $alldepartments = pg_fetch_all($result);
       $allstatus = array("Open", "In progress", "Completed", "Accepted", "Rejected");
       ?>
-
       <div class="dropdown">
         <button class="btn btn-primary backk dropdown-toggle" type="button" id="statusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
           All Status
@@ -62,36 +56,20 @@
           filterTable();
           document.getElementById("departmentDropdown").textContent = department || "All Departments";
         }
-
         function filterTable() {
           var table = document.querySelector(".project-list-table");
           var rows = table.getElementsByTagName("tr");
           for (var i = 1; i < rows.length; i++) {
             var cells = rows[i].getElementsByTagName("td");
-            if (cells.length < 6) continue;
+            if (cells.length < 5) continue;
             var departmentCell = cells[3];
-            var statusCell = cells[5];
+            var statusCell = cells[4];
             var departmentMatch = currentDepartment === "" || departmentCell.textContent.trim() === currentDepartment;
             var statusMatch = currentStatus === "" || statusCell.textContent.trim() === currentStatus;
             rows[i].style.display = departmentMatch && statusMatch ? "" : "none";
           }
         }
       </script>
-
-
-      <div class="dropdown">
-        <button class="btn btn-primary backk dropdown-toggle" type="button" id="departmentDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          All Departments
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="departmentDropdown">
-          <li><a class="dropdown-item" href="#" onclick="filterDepartment('')">All Departments</a></li>
-          <?php foreach ($alldepartments as $department) : ?>
-            <li><a class="dropdown-item" href="#" onclick="filterDepartment('<?php echo $department['departmentname']; ?>')"><?php echo $department['departmentname']; ?></a>
-            </li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
-
       <div id="cover">
         <form onsubmit="event.preventDefault(); searchTable()" class="flex flex-row justify-center items-center h-full">
           <div class=" w-auto h-full relative">
@@ -121,7 +99,7 @@
             var rows = table.getElementsByTagName("tr");
             for (var i = 1; i < rows.length; i++) {
               var cells = rows[i].getElementsByTagName("td");
-              if (cells.length > 0) { // Check if the row has at least one cell
+              if (cells.length > 0) {
                 var cell = cells[0];
                 var cellText = cell.textContent.toLowerCase().trim().replace(/\s\s+/g, ' ');
                 var match = cellText.includes(searchTerm);
@@ -131,8 +109,6 @@
           }
         </script>
       </div>
-      <button type="button" class="buttonn-74" data-bs-toggle="modal" data-bs-target="#createtaskModal">Create
-        Task</button>
     </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css" integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
@@ -146,12 +122,10 @@
                   <tr>
                     <th scope="col" style="width: 220px;">Task</th>
                     <th scope="col" style="width: 100px;">Deadline</th>
-                    <th scope="col" style="width: 200px;">Assignee's ID</th>
-                    <th scope="col" style="width: 170px;">Department</th>
-                    <th scope="col" style="width: 220px;">Assignee's Role</th>
+                    <th scope="col" style="width: 170px;">Head ID</th>
+                    <th scope="col" style="width: 170px;">Head</th>
                     <th scope="col" style="width: 220px;">Status</th>
                     <th scope="col" style="width: 220px;">Action</th>
-
                   </tr>
                 </thead>
                 <tbody>
@@ -161,6 +135,7 @@
                   if (!$dbconn) {
                     die("Connection failed: " . pg_last_error());
                   }
+                  $currentuser = $_SESSION['user'];
                   $query = 'SELECT * FROM roles';
                   $result = pg_query($dbconn, $query);
                   $allroles = pg_fetch_all($result);
@@ -172,22 +147,19 @@
                   $query = 'SELECT * FROM departments';
                   $result = pg_query($dbconn, $query);
                   $alldepartments = pg_fetch_all($result);
-
-
-
-
-                  $query = 'SELECT tasks.taskid as id, tasks.title AS title, tasks.description AS description, tasks.deadline AS deadline, tasks.status AS status, tasks.responsibleuserid AS responsibleuserid, departments.departmentname AS departmentname, roles.rolename AS rolename
-            FROM tasks
-            INNER JOIN users ON tasks.responsibleuserid = users.userid
-            INNER JOIN departments ON users.departmentid = departments.departmentid
-            INNER JOIN roles ON users.roleid = roles.roleid';
-
+                  $currentUserId = $currentuser['userid'];
+                  $query = "SELECT tasks.taskid as id, tasks.title AS title, tasks.description AS description, tasks.deadline AS deadline, tasks.status AS status, tasks.creatorid AS creatorid, departments.departmentname AS departmentname, users.fullname AS fullname
+                              FROM tasks
+                              INNER JOIN users ON tasks.creatorid = users.userid
+                              INNER JOIN departments ON users.departmentid = departments.departmentid WHERE tasks.responsibleuserid = $currentUserId";
                   $result = pg_query($dbconn, $query);
+                  if (!$result) {
+                    die("Error in SQL query: " . pg_last_error());
+                  }
                   $tasks = pg_fetch_all($result);
 
                   foreach ($tasks as $task) {
                   ?>
-
                     <tr>
                       <td>
                         <div class="avatar-sm d-inline-block me-2">
@@ -198,9 +170,8 @@
                         <a href="#" class="text-body"><?php echo $task['title']; ?></a>
                       </td>
                       <td><?php echo $task['deadline']; ?></td>
-                      <td><?php echo $task['responsibleuserid']; ?></td>
-                      <td><?php echo $task['departmentname']; ?></td>
-                      <td><?php echo $task['rolename']; ?></td>
+                      <td><?php echo $task['creatorid']; ?></td>
+                      <td><?php echo $task['fullname']; ?></td>
 
                       <td>
                         <span id="status_<?= $task['id'] ?>" class="badge 
@@ -237,7 +208,6 @@
                             <div class="dropdown-menu dropdown-menu-end">
                               <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewTaskModal<?= $task['id'] ?>" data-taskid="<?= $task['id'] ?>">View
                                 Task</a>
-                              <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deleteTaskModal<?= $task['id'] ?>">Delete Task</a>
                             </div>
                             <div class="modal fade" id="viewTaskModal<?= $task['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                               <div class="modal-dialog modal-xl" style="width:1450px; max-width: 1250px; overflow: auto; height: 600px;">
@@ -247,8 +217,8 @@
                                       <h5 class="modal-title" id="exampleModalLabel">View Task</h5>
                                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body w-full justify-between flex items-center flex-col">
-                                      <table class="tasktab">
+                                    <div class="modal-body w-full h-full justify-between flex items-center flex-col">
+                                      <table class="tasktab w-full">
                                         <tr>
                                           <th>Title</th>
                                           <td id="taskTitle<?= $task['id'] ?>"></td>
@@ -266,72 +236,17 @@
                                           <td id="taskStatus<?= $task['id'] ?>"></td>
                                         </tr>
                                         <tr>
-                                          <th>Responsible User ID</th>
-                                          <td id="taskResponsibleUserId<?= $task['id'] ?>"></td>
+                                          <th>Head ID</th>
+                                          <td id="taskAssignerId<?= $task['id'] ?>"></td>
                                         </tr>
                                         <tr>
-                                          <th>Department Name</th>
-                                          <td id="taskDepartmentName<?= $task['id'] ?>"></td>
+                                          <th>Head's Name</th>
+                                          <td id="taskAssigner<?= $task['id'] ?>"></td>
                                         </tr>
                                       </table>
-                                      <style>
-                                        .tasktab {
-                                          display: block;
-                                          width: 100%;
-                                          height: 66%;
-                                          overflow: auto;
-                                        }
-
-                                        .tasktab tbody {
-                                          display: table;
-                                          width: 100%;
-                                          height: 100%;
-                                          table-layout: fixed !important;
-                                        }
-
-                                        .tasktab th {
-
-                                          padding-top: 0px !important;
-                                          padding-left: 0px !important;
-                                          padding-bottom: 0px !important;
-                                        }
-
-                                        .tasktab td {
-                                          white-space: normal;
-                                          padding-left: 30px !important;
-                                          padding-right: 0px !important;
-                                          padding-top: 0px !important;
-                                          padding-bottom: 0px !important;
-                                        }
-
-                                        .commentTable {
-                                          width: 100%;
-                                          display: flex;
-                                        }
-
-                                        .commentTable table {
-                                          width: 100%;
-                                          display: table;
-                                        }
-
-                                        .commentTable thead {
-                                          display: table;
-                                          width: 100%;
-                                          table-layout: fixed;
-                                        }
-
-                                        .commentTable tbody {
-                                          height: 350px;
-                                          overflow: auto;
-                                          display: block;
-                                          width: 100%;
-                                          table-layout: fixed;
-                                        }
-                                      </style>
-
-                                      <div id="taskActions<?= $task['id'] ?>">
-                                        <button type="button" class="btn btn-success acceptBtn" data-taskid="<?= $task['id'] ?>">Accept</button>
-                                        <button type="button" class="btn btn-danger rejectBtn" data-taskid="<?= $task['id'] ?>">Reject</button>
+                                      <div class="flex flex-row gap-4 justify-center items-center" id="taskActions<?= $task['id'] ?>">
+                                        <button type="button" class="btn btn-success takeBtn" data-taskid="<?= $task['id'] ?>">Take on task</button>
+                                        <button type="button" class="btn btn-primary submitBtn" data-taskid="<?= $task['id'] ?>">Submit task</button>
                                       </div>
                                     </div>
                                   </div>
@@ -354,19 +269,18 @@
                                         .tasktab {
                                           display: block;
                                           width: 100%;
-                                          height: 66%;
+                                          height:66%;
                                           overflow: auto;
                                         }
 
                                         .tasktab tbody {
                                           display: table;
-                                          width: 100%;
+                                          width: 100%; 
                                           height: 100%;
                                           table-layout: fixed !important;
                                         }
-
                                         .tasktab th {
-
+                                          
                                           padding-top: 0px !important;
                                           padding-left: 0px !important;
                                           padding-bottom: 0px !important;
@@ -406,7 +320,6 @@
                                       </style>
 
                                       <div class="flex flex-col justify-center items-center w-full gap-2">
-
                                         <textarea style="width: 100%; border: 2px solid black; margin-left: 12px;  margin-right: 12px;  padding: 5px; border-radius: 12px" id="taskComment<?= $task['id'] ?>" placeholder="Add a comment..."></textarea>
                                         <button type="button" class="btn btn-primary submitCommentBtn" data-taskid="<?= $task['id'] ?>">Submit Comment</button>
                                       </div>
@@ -438,31 +351,38 @@
                                       $('#taskDescription' + taskId).text(data.description);
                                       $('#taskDeadline' + taskId).text(data.deadline);
                                       $('#taskStatus' + taskId).text(data.status);
-                                      $('#taskResponsibleUserId' + taskId).text(data.responsibleuserid);
-                                      $('#taskDepartmentName' + taskId).text(data.departmentname);
+                                      $('#taskAssignerId' + taskId).text(data.creatorid);
+                                      $('#taskAssigner' + taskId).text(data.fullname);
 
-                                      if (data.status === 'Completed' && data.responsibleuserroleid == 4 && data.responsibleuserdepartmentid == <?= $currentuser['departmentid'] ?>) {
-                                        $('#taskActions' + taskId).show();
+                                      if (data.status === 'Open') {
+                                        $('.takeBtn[data-taskid="' + taskId + '"]').prop('disabled', false);
+                                        $('.submitBtn[data-taskid="' + taskId + '"]').prop('disabled', true);
+                                      } else if (data.status === 'In progress') {
+                                        $('.takeBtn[data-taskid="' + taskId + '"]').prop('disabled', true);
+                                        $('.submitBtn[data-taskid="' + taskId + '"]').prop('disabled', false);
                                       } else {
-                                        $('#taskActions' + taskId).hide();
+                                        $('.takeBtn[data-taskid="' + taskId + '"]').prop('disabled', true);
+                                        $('.submitBtn[data-taskid="' + taskId + '"]').prop('disabled', true);
                                       }
 
                                       $('#commentTable' + taskId + ' tbody').empty();
+
+
 
                                       $.each(data.comments, function(i, comment) {
                                         var timestamp = comment.timestampp.substring(0, 19);
                                         $('#commentTable' + taskId + ' tbody').prepend('<tr><td>' + comment.userid + '</td><td>' + comment.rolename + '</td><td>' + comment.text + '</td><td>' + timestamp + '</td></tr>');
                                       });
+
                                     }
                                   });
                                 });
-
-                                $('.acceptBtn, .rejectBtn').click(function() {
+                                $('.submitBtn').click(function() {
                                   var taskId = $(this).data('taskid');
-                                  var newStatus = $(this).hasClass('acceptBtn') ? 'Accepted' : 'Rejected';
+                                  var newStatus = 'Completed';
                                   var comment = $('#taskComment' + taskId).val();
 
-                                  $('.acceptBtn, .rejectBtn').prop('disabled', true);
+                                  $('.submitBtn').prop('disabled', true);
 
                                   $.ajax({
                                     url: "update_task.php",
@@ -476,15 +396,43 @@
                                     success: function(data) {
                                       if (data.status === 'success') {
                                         $('#taskStatus' + taskId).text(newStatus);
-                                        $('#taskActions' + taskId).hide();
+
                                       }
                                     }
                                   });
+                                  $('#taskStatus' + taskId).text(newStatus);
                                 });
+                                $('.takeBtn').click(function() {
+                                  var taskId = $(this).data('taskid');
+                                  var newStatus = 'In progress';
+                                  var comment = $('#taskComment' + taskId).val();
 
+                                  $('.takeBtn').prop('disabled', true);
+
+                                  $.ajax({
+                                    url: "update_task.php",
+                                    method: "POST",
+                                    data: {
+                                      taskId: taskId,
+                                      status: newStatus,
+                                      comment: comment
+                                    },
+                                    dataType: "json",
+                                    success: function(data) {
+                                      if (data.status === 'success') {
+                                        $('#taskStatus' + taskId).text(newStatus);
+
+                                      }
+                                    }
+
+                                  });
+
+                                  $('#taskStatus' + taskId).text(newStatus);
+                                });
                                 $('.submitCommentBtn').off().click(function() {
                                   var taskId = $(this).data('taskid');
                                   var comment = $('#taskComment' + taskId).val();
+
 
                                   $.ajax({
                                     url: "submit_comment.php",
@@ -497,104 +445,17 @@
                                     dataType: "json",
                                     success: function(data) {
                                       if (data.status === 'success') {
-                                        
-
                                         $('#commentTable' + taskId + ' tbody').append('<tr><td><?= $currentuser['userid'] ?></td><td>Department Head</td><td>' + comment + '</td></tr>');
-
                                         $('#taskComment' + taskId).val('');
                                       }
                                     }
                                   });
+
                                 });
                               });
                             </script>
             </div>
-            <div class="modal fade" id="deleteTaskModal<?= $task['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
 
-                    <form id="deleteForm<?= $task['id'] ?>" action="delete_task.php" method="post">
-                      Are you sure you want to delete this task?
-                      <input type="hidden" name="taskId" value="<?= $task['id'] ?>">
-                    </form>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="document.getElementById('deleteForm<?= $task['id'] ?>').submit()">Confirm</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="modal fade" id="createtaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add Task for Staff(s)</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body flex flex-col gap-2">
-                    <input type="text" id="newTaskTitle" class="form-control" placeholder="Task">
-                    <input type="text" id="newTaskDescription" class="form-control" placeholder="Description">
-                    <input type="date" id="newTaskDeadline" class="form-control" placeholder="Deadline">
-                    <select id="newTaskResponsibleUserId" class="form-control">
-                      <option disabled selected value="">Select responsible ID of Staff</option>
-                      <?php
-                      $conn_str = "postgresql://webdb_owner:htx50eprzaUA@ep-weathered-poetry-a129mhzu.ap-southeast-1.aws.neon.tech/webdb?options=endpoint%3Dep-weathered-poetry-a129mhzu&sslmode=require";
-                      $dbconn = pg_connect($conn_str);
-                      if (!$dbconn) {
-                        die("Connection failed: " . pg_last_error());
-                      }
-
-                      $queryy = "SELECT userid FROM users WHERE roleid = 4 and departmentid = {$currentuser['departmentid']}"; // change to same department late
-                      $result = pg_query($dbconn, $queryy);
-
-                      if (!$result) {
-                        die("Error in SQL query: " . pg_last_error());
-                      }
-
-                      while ($row = pg_fetch_assoc($result)) {
-                        echo "<option value='" . $row['userid'] . "'>" . $row['userid'] . "</option>";
-                      }
-
-                      pg_close($dbconn);
-                      ?>
-                    </select>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="addTask()">Create Task</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <script>
-              function addTask() {
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "add_task.php", true);
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onreadystatechange = function() {
-                  if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                    alert("Task added successfully");
-                    location.reload();
-                  }
-                }
-                var title = document.getElementById('newTaskTitle').value;
-                var description = document.getElementById('newTaskDescription').value;
-                var deadline = document.getElementById('newTaskDeadline').value;
-                var responsibleUserId = document.getElementById('newTaskResponsibleUserId').value;
-                var creatorId = <?= $currentuser['userid'] ?>;
-                var status = "Open";
-                var params = "title=" + title + "&description=" + description + "&deadline=" + deadline + "&creatorId=" + creatorId + "&responsibleUserId=" + responsibleUserId + "&status=" + status;
-                xhr.send(params);
-              }
-            </script>
           <?php
                   }
           ?>
