@@ -18,7 +18,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 
-<body>
+<body >
   <?php
   if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
@@ -52,7 +52,7 @@
   $departments = pg_fetch_all($departments_result);
   ?>
 
-  <section class="w-screen h-screen flex flex-col items-center gap-4 bg-gray-200">
+  <section class="w-screen h-screen flex flex-col items-center gap-4 bg-gray-200 " style="width: 100vw;overflow-x:hidden !important;">
 
     <div class="w-full bg-white flex justify-start items-center" style="height: 80px; padding-left: 160px;">
       <h4 class="font-bold">Account Details</h4>

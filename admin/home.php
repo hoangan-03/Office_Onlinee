@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Simple landing page</title>
+  <title>HomePage</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -16,8 +16,6 @@
   
 
 </head>
-
-
 <body id="body" data-spy="scroll" data-target=".navbar" data-offset="100">
   <?php
   include 'sidebar.php';
@@ -39,12 +37,14 @@
   ?>
   
   <div class="banner flex flex-col w-screen justify-center items-center" >
-    <div class="container w-full  h-screen" style="margin-top: 100px">
-      <h1 class="font-weight-semibold mb-3">Office Online </h1>
-  
+    <div class="container w-full  h-screen flex flex-col gap-3 justify-center items-center">
+      <div class="flex flex-col gap-3 bg-white py-4 px-4" style="width: 800px; height: auto;">
+    <h2 class="font-weight-semibold">Office Online: Solutions for Companies.</h2>
+    <h4 style="color:gray">Experience seamless task management and enhanced collaboration with Office Online.</h4>
       <div>
-        <button class="btn btn-primary mr-1">Get started</button>
-        <button class="btn btn-secondary ml-1">Learn more</button>
+        <button style="border-radius: 0px !important;" class="btn btn-primary mr-1 px-5 py-1 text-xl">Get started now</button>
+        </div>
+  
       </div>
       <img src="images/Group171.svg" alt="" class="img-fluid">
     </div>
@@ -232,7 +232,7 @@
             <h5 class="pb-2">Get in Touch</h5>
             <p class="text-muted">Don’t miss any updates of our new features</p>
             <form>
-              <input type="text" class="form-control" id="Email" placeholder="Email id">
+              <input type="text" class="form-control mt-3" id="Email" placeholder="Email">
             </form>
             <div class="pt-3">
               <button class="btn btn-dark">Subscribe</button>
