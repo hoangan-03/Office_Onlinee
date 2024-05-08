@@ -6,15 +6,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="vendors/owl-carousel/css/owl.carousel.min.css">
-  <link rel="stylesheet" href="vendors/owl-carousel/css/owl.theme.default.css">
-  <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
-  <link rel="stylesheet" href="vendors/aos/css/aos.css">
-  <link rel="stylesheet" href="css/style.min.css">
+  <link rel="stylesheet" href="./bootstraps/vendors/owl-carousel/css/owl.carousel.min.css">
+  <link rel="stylesheet" href="./bootstraps/vendors/owl-carousel/css/owl.theme.default.css">
+  <link rel="stylesheet" href="./bootstraps/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="./bootstraps/vendors/aos/css/aos.css">
+  <link rel="stylesheet" href="./bootstraps/css/style.min.css">
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../prestyles.css">
-  
-
 </head>
 <body id="body" data-spy="scroll" data-target=".navbar" data-offset="100">
   <?php
@@ -22,31 +20,21 @@
   if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
   }
-  $currentuser = $_SESSION['user'];
-  $conn_str = "postgresql://webdb_owner:htx50eprzaUA@ep-weathered-poetry-a129mhzu.ap-southeast-1.aws.neon.tech/webdb?options=endpoint%3Dep-weathered-poetry-a129mhzu&sslmode=require";
-  $dbconn = pg_connect($conn_str);
-  if (!$dbconn) {
-    die("Connection failed: " . pg_last_error());
-  }
-
-  $query = "SELECT departmentname FROM departments WHERE departmentid = " . $currentuser['departmentid'];
-  $result = pg_query($dbconn, $query);
-  $departmentname = pg_fetch_result($result, 0, 'departmentname');
-
-
   ?>
-  
-  <div class="banner flex flex-col w-screen justify-center items-center" >
-    <div class="container w-full  h-screen flex flex-col gap-3 justify-center items-center">
-      <div class="flex flex-col gap-3 bg-white py-4 px-4" style="width: 800px; height: auto;">
-    <h2 class="font-weight-semibold">Office Online: Solutions for Companies.</h2>
-    <h4 style="color:gray">Experience seamless task management and enhanced collaboration with Office Online.</h4>
-      <div>
-        <button style="border-radius: 0px !important;" class="btn btn-primary mr-1 px-5 py-1 text-xl">Get started now</button>
+  <div class="banner flex flex-col w-screen justify-center items-center">
+    <div class="w-screen  h-screen flex flex-row justify-between items-center"style="">
+      <div class="flex flex-col gap-3 bg-white px-4 text-start justify-center items-start" style="width: 50%; height: 100%; padding-left: 220px !important;">
+        <h1 style="font-size: 60px"class="font-weight-semibold"> Office Online</h1>
+        <h4 style="color:gray; font-size: 40px">Real-time Solutions<br> for Companies</h4>
+        <div >
+          <a href="#features-section" >
+            <button style="border-radius: 40px !important; margin-right: 200px;" class="btn btn-primary mr-1 px-4 py-2 text-xl">Get started now</button>
+          </a>
         </div>
-  
       </div>
-      <img src="images/Group171.svg" alt="" class="img-fluid">
+      <div class="rounded-full flex justify-center items-center" style="width: 530px; height: 530px;margin-right: 100px; background-color: white; opacity: 0.8;">
+        <img style="width: 530px; height: auto; object-fit: cover;" src="images/ilu.png" alt="" class="img-fluid">
+      </div>
     </div>
   </div>
   <div class="content-wrapper flex justify-center items-center">
@@ -62,7 +50,7 @@
               <img src="images/Group12.svg" alt="" class="img-icons">
               <h5 class="py-3">Role-based<br> Access Control</h5>
               <p class="text-muted">Administrators manage user roles and permissions, while Directors oversee task assignments. Department Heads manage tasks within their departments, and Staff access relevant tasks. This approach enhances security and confidentiality.</p>
-            
+
             </div>
           </div>
           <div class="grid-margin d-flex justify-content-center">
@@ -70,7 +58,7 @@
               <img src="images/Group7.svg" alt="" class="img-icons">
               <h5 class="py-3">Task Management and <br>Assignment</h5>
               <p class="text-muted">Directors assign tasks to Department Heads, who further delegate tasks to Staff. The platform facilitates collaboration, providing task details, deadlines, and progress tracking. This streamlines communication and boosts productivity.</p>
-            
+
             </div>
           </div>
           <div class="grid-margin d-flex justify-content-end">
@@ -78,7 +66,7 @@
               <img src="images/Group5.svg" alt="" class="img-icons">
               <h5 class="py-3">Task Review <br> Approval Workflow</h5>
               <p class="text-muted">Directors and Department Heads can accept, reject, or request revisions on tasks. Staff submit results, and superiors provide feedback. This ensures accountability and transparency in task completion.</p>
-            
+
             </div>
           </div>
         </div>
@@ -103,9 +91,9 @@
             <h3 class="m-0">Revolutionize Management<br>Empower Collaboration</h3>
             <div class="p-0 w-full">
               <p class="py-4 m-0 text-muted">Our innovative platform empowers teams to work seamlessly, share insights, and achieve collective goals. Be part of the change, apply today and amplify teamwork.</p>
-              
+
             </div>
-         
+
           </div>
         </div>
       </section>
@@ -120,10 +108,10 @@
               <div class="card-body">
                 <div class="text-center">
                   <img src="images/face2.jpg" width="89" height="89" alt="" class="img-customer">
-                  <p class="m-0 py-3 text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
+                  <p class="m-0 py-3 text-muted">Our company swears by Office Online! It's like having a virtual office that keeps us all on the same page.</p>
                   <div class="content-divider m-auto"></div>
                   <h6 class="card-title pt-3">Tony Martinez</h6>
-                  <h6 class="customer-designation text-muted m-0">Marketing Manager</h6>
+                  <h6 class="customer-designation text-muted m-0">General Manager</h6>
                 </div>
               </div>
             </div>
@@ -131,10 +119,10 @@
               <div class="card-body">
                 <div class="text-center">
                   <img src="images/face3.jpg" width="89" height="89" alt="" class="img-customer">
-                  <p class="m-0 py-3 text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
+                  <p class="m-0 py-3 text-muted">Can't imagine managing tasks without Office Online now. It's become our go-to tool for collaboration</p>
                   <div class="content-divider m-auto"></div>
                   <h6 class="card-title pt-3">Sophia Armstrong</h6>
-                  <h6 class="customer-designation text-muted m-0">Marketing Manager</h6>
+                  <h6 class="customer-designation text-muted m-0">General Manager</h6>
                 </div>
               </div>
             </div>
@@ -142,10 +130,10 @@
               <div class="card-body">
                 <div class="text-center">
                   <img src="images/face20.jpg" width="89" height="89" alt="" class="img-customer">
-                  <p class="m-0 py-3 text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
+                  <p class="m-0 py-3 text-muted">Props to Office Online for making our work life so much easier. It's intuitive and just works</p>
                   <div class="content-divider m-auto"></div>
                   <h6 class="card-title pt-3">Cody Lambert</h6>
-                  <h6 class="customer-designation text-muted m-0">Marketing Manager</h6>
+                  <h6 class="customer-designation text-muted m-0">General Manager</h6>
                 </div>
               </div>
             </div>
@@ -153,10 +141,10 @@
               <div class="card-body">
                 <div class="text-center">
                   <img src="images/face15.jpg" width="89" height="89" alt="" class="img-customer">
-                  <p class="m-0 py-3 text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
+                  <p class="m-0 py-3 text-muted">Office Online is a lifesaver for us busy bees. It's like having a personal assistant for task management.</p>
                   <div class="content-divider m-auto"></div>
                   <h6 class="card-title pt-3">Cody Lambert</h6>
-                  <h6 class="customer-designation text-muted m-0">Marketing Manager</h6>
+                  <h6 class="customer-designation text-muted m-0">General Manager</h6>
                 </div>
               </div>
             </div>
@@ -164,10 +152,10 @@
               <div class="card-body">
                 <div class="text-center">
                   <img src="images/face16.jpg" width="89" height="89" alt="" class="img-customer">
-                  <p class="m-0 py-3 text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
+                  <p class="m-0 py-3 text-muted">I'm constantly impressed by how Office Online streamlines our workflow. It's seriously a game-changer.</p>
                   <div class="content-divider m-auto"></div>
                   <h6 class="card-title pt-3">Cody Lambert</h6>
-                  <h6 class="customer-designation text-muted m-0">Marketing Manager</h6>
+                  <h6 class="customer-designation text-muted m-0">General Manager</h6>
                 </div>
               </div>
             </div>
@@ -175,10 +163,10 @@
               <div class="card-body">
                 <div class="text-center">
                   <img src="images/face1.jpg" width="89" height="89" alt="" class="img-customer">
-                  <p class="m-0 py-3 text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
+                  <p class="m-0 py-3 text-muted">Kudos to the team behind Office Online. They've nailed it with a platform that's both powerful and user-friendly</p>
                   <div class="content-divider m-auto"></div>
                   <h6 class="card-title pt-3">Tony Martinez</h6>
-                  <h6 class="customer-designation text-muted m-0">Marketing Manager</h6>
+                  <h6 class="customer-designation text-muted m-0">General Manager</h6>
                 </div>
               </div>
             </div>
@@ -186,10 +174,10 @@
               <div class="card-body">
                 <div class="text-center">
                   <img src="images/face2.jpg" width="89" height="89" alt="" class="img-customer">
-                  <p class="m-0 py-3 text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
+                  <p class="m-0 py-3 text-muted">I've tried a bunch of task management tools, but Office Online takes the cake. It's got everything we need.</p>
                   <div class="content-divider m-auto"></div>
                   <h6 class="card-title pt-3">Tony Martinez</h6>
-                  <h6 class="customer-designation text-muted m-0">Marketing Manager</h6>
+                  <h6 class="customer-designation text-muted m-0">General Manager</h6>
                 </div>
               </div>
             </div>
@@ -197,10 +185,10 @@
               <div class="card-body">
                 <div class="text-center">
                   <img src="images/face3.jpg" width="89" height="89" alt="" class="img-customer">
-                  <p class="m-0 py-3 text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
+                  <p class="m-0 py-3 text-muted">With Office Online, it's like our office is with us wherever we go. It's a real game-changer for remote work</p>
                   <div class="content-divider m-auto"></div>
                   <h6 class="card-title pt-3">Sophia Armstrong</h6>
-                  <h6 class="customer-designation text-muted m-0">Marketing Manager</h6>
+                  <h6 class="customer-designation text-muted m-0">General Manager</h6>
                 </div>
               </div>
             </div>
@@ -208,10 +196,10 @@
               <div class="card-body">
                 <div class="text-center">
                   <img src="images/face20.jpg" width="89" height="89" alt="" class="img-customer">
-                  <p class="m-0 py-3 text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
+                  <p class="m-0 py-3 text-muted">Our productivity levels have soared since we started using Office Online. It's become indispensable to our team</p>
                   <div class="content-divider m-auto"></div>
                   <h6 class="card-title pt-3">Cody Lambert</h6>
-                  <h6 class="customer-designation text-muted m-0">Marketing Manager</h6>
+                  <h6 class="customer-designation text-muted m-0">General Manager</h6>
                 </div>
               </div>
             </div>
@@ -222,7 +210,7 @@
       <section class="contact-details" id="contact-details-section">
         <div class="row text-center text-md-left">
           <div class="col-12 col-md-6 col-lg-3 grid-margin">
-            <img src="images/Group2.svg" alt="" class="pb-2">
+            <img src="../logo.png" style="width: 50px;" alt="" class="pb-2">
             <div class="pt-2">
               <p class="text-muted m-0">office_hcmut@gmail.dev</p>
               <p class="text-muted m-0">012-345-6789</p>
@@ -297,11 +285,11 @@
       </div>
     </div>
   </div>
-  <script src="vendors/jquery/jquery.min.js"></script>
-  <script src="vendors/bootstrap/bootstrap.min.js"></script>
-  <script src="vendors/owl-carousel/js/owl.carousel.min.js"></script>
-  <script src="vendors/aos/js/aos.js"></script>
-  <script src="js/landingpage.js"></script>
+  <script src="./bootstraps/vendors/jquery/jquery.min.js"></script>
+  <script src="./bootstraps/vendors/bootstrap/bootstrap.min.js"></script>
+  <script src="./bootstraps/vendors/owl-carousel/js/owl.carousel.min.js"></script>
+  <script src="./bootstraps/vendors/aos/js/aos.js"></script>
+  <script src="./bootstraps/js/landingpage.js"></script>
 </body>
 
 </html>

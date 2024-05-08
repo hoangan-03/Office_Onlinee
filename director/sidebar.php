@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../sidebar.css" />
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="script.js"></script>
 </head>
 
 <body>
@@ -56,6 +55,12 @@
       <div class="sidebar-item items-center flex flex-row justify-start items-center <?php echo basename($_SERVER['PHP_SELF']) == 'directorManagement.php' ? 'bg-blue-100' : ''; ?> gap-4">
         <img alt="calendar" class="sidebar-logo w-2 h-2 object-cover" src="../assets/task.png" />
         <h1 class="sidebar-hug-item">Task Assignment</h1>
+      </div>
+    </a>
+    <a href="account_info.php">
+      <div class="sidebar-item items-center flex flex-row justify-start items-center <?php echo basename($_SERVER['PHP_SELF']) == 'account_info.php' ? 'bg-blue-100' : ''; ?> gap-4">
+        <img alt="calendar" class="sidebar-logo w-2 h-2 object-cover" src="../assets/user.png" />
+        <h1 class="sidebar-hug-item">Account</h1>
       </div>
     </a>
     <a href="../logout.php">

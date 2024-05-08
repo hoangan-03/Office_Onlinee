@@ -406,7 +406,7 @@
                   // Add each comment to the comment table
                   $.each(data.comments, function(i, comment) {
                     var timestamp = comment.timestampp.substring(0, 19);
-                    $('#commentTable' + taskId + ' tbody').append('<tr><td>' + comment.userid + '</td><td>' + comment.rolename + '</td><td>' + comment.text + '</td><td>' + timestamp + '</td></tr>');
+                    $('#commentTable' + taskId + ' tbody').prepend('<tr><td>' + comment.userid + '</td><td>' + comment.rolename + '</td><td>' + comment.text + '</td><td>' + timestamp + '</td></tr>');
                   });
                 }
               });
