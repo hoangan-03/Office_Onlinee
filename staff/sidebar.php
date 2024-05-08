@@ -24,12 +24,9 @@
   if (!$dbconn) {
     die("Connection failed: " . pg_last_error());
   }
-
   $query = "SELECT departmentname FROM departments WHERE departmentid = " . $currentuser['departmentid'];
   $result = pg_query($dbconn, $query);
   $departmentname = pg_fetch_result($result, 0, 'departmentname');
-
-
   ?>
   <div class="sidebar">
     <div class="flex items-center justify-center flex-col gap-2 py-2 h-120 mt-50">

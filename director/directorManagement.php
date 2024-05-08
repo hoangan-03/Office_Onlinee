@@ -502,6 +502,7 @@
             <div class="modal-body flex flex-col gap-2">
               <input type="text" id="newTaskTitle" class="form-control" placeholder="Task">
               <input type="text" id="newTaskDescription" class="form-control" placeholder="Description">
+
               <input type="date" id="newTaskDeadline" class="form-control" placeholder="Deadline">
               <select id="newTaskResponsibleUserId" class="form-control">
                 <option disabled selected value="">Select responsible ID of Head</option>
@@ -550,7 +551,7 @@
           var description = document.getElementById('newTaskDescription').value;
           var deadline = document.getElementById('newTaskDeadline').value;
           var responsibleUserId = document.getElementById('newTaskResponsibleUserId').value;
-          var creatorId = 2;
+          var creatorId = <?= $currentuser['userid'] ?>;
           var status = "Open";
           var params = "title=" + title + "&description=" + description + "&deadline=" + deadline + "&creatorId=" + creatorId + "&responsibleUserId=" + responsibleUserId + "&status=" + status;
           xhr.send(params);
